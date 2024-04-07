@@ -7,5 +7,5 @@ const startSNI = () => {
 } 
 
 ipcRenderer.on('startedSNI', () => {
-    alert("Started SNI");
+    document.getElementById("startSNIButton").textContent="Stop SNI";
 })
