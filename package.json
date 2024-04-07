@@ -1,0 +1,19 @@
+{
+  "name": "snes_panel",
+  "productName": "snes_panel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "author": "cheesyboatride",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "electron": "^29.2.0"
+  },
+  "dependencies": {
+    "toastify-js": "^1.12.0"
+  }
+}
