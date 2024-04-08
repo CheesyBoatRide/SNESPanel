@@ -4,31 +4,48 @@ const path = require('node:path')
 
 const isDev = process.env.NODE_ENV !== 'production'
 
-let win = null;
+const fs = require('node:fs');
+let configData = null;
 
-function checkForSNI() {
-    var ps = require('ps-node');
-    
-    // A simple pid lookup 
-    ps.lookup({
-        command: 'node',
-        psargs: 'ux'
-    }, function (err, resultList) {
+let mainWindow = null;
+let funtoonWindow = null;
+let inputViewerWindow = null;
+
+let sniInstance = null;
+
+function updateSNIStatus() {
+    if(sniInstance === null) {
+        mainWindow.webContents.send("sniNotRunning");
+    } else if(sniInstance.pid === undefined) {
+        mainWindow.webContents.send("sniError");
+    } else {
+        mainWindow.webContents.send("sniRunning");
+    }
+}
+
+function loadSettings() {
+    var toml = require('toml');
+    fs.readFile(path.join(__dirname, 'config.toml'), 'utf8', (err, data) => {
         if (err) {
-            throw new Error(err);
+          console.error(err);
+          return;
         }
-
-        resultList.forEach(function (process) {
-            if (process) {
-                console.log('PID: %s, COMMAND: %s, ARGUMENTS: %s', process.pid, process.command, process.arguments);
-                win.webContents.send("startedSNI");
-            }
-        });
+        configData = toml.parse(data);
     });
 }
 
-const createWindow = () => {
-    win = new BrowserWindow({
+function startSNI() {
+    const { spawn } = require('child_process');
+    sniInstance = spawn(configData.apps.SNI);
+}
+
+function killSNI() {
+    sniInstance.kill()
+    sniInstance = null;
+}
+
+function createMainWindow() {
+    mainWindow = new BrowserWindow({
         title: 'SNES Control Panel',
         width: 1080,
         height: 720,
@@ -36,15 +53,15 @@ const createWindow = () => {
             nodeIntegration: true,
             contextIsolation: false
         }
-    })
+    });
+
+    mainWindow.loadFile(path.join(__dirname, './render/index.html'));
 
     // open devtools in dev
     if (isDev) {
-        win.webContents.openDevTools();
+        mainWindow.webContents.openDevTools();
     }
 
-    checkForSNI();
-    win.loadFile(path.join(__dirname, './render/index.html'))
 }
 
 // Menu template
@@ -61,23 +78,65 @@ const menu = [
 ]
 
 app.whenReady().then(() => {
-    createWindow()
+    createMainWindow()
 
     const mainMenu = Menu.buildFromTemplate(menu);
     Menu.setApplicationMenu(mainMenu);
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0)
-            createWindow();
+            createMainWindow();
     })
+
+    loadSettings();
+    
+    updateSNIStatus();
 })
 
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 })
 
-ipcMain.on('startSNI', (event, data) => {
+ipcMain.on('toggleSNI', (event, data) => {
     // start SNI
-    checkForSNI();
+    if(sniInstance === null) {
+        startSNI();
+    } else {
+        killSNI();
+    }
+
+    updateSNIStatus();
+})
+
+function createInputViewerWindow() {
+    mainWindow = new BrowserWindow({
+        title: 'SNES Input Viewer',
+        width: 300,
+        height: 150,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+
+    mainWindow.loadFile(path.join(__dirname, './render/inputviewer.html'));
+}
+
+ipcMain.on('openTracker', (event, data) => {
+
+})
+
+ipcMain.on('openFuntoon', (event, data) => {
+    if(funtoonWindow === null) {
+        funtoonWindow = new BrowserWindow({
+            title: 'Funtoon',
+            width: 800,
+            height: 600
+        });
+    
+        funtoonWindow.loadURL('https://funtoon.party/qusb/');
+    }
 })
