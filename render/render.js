@@ -2,6 +2,17 @@
 
 const ipcRenderer = require('electron').ipcRenderer;
 
+function connectToSnes() {
+    ipcRenderer.send("connectToSnes");
+}
+
+function resetSnes() {
+    ipcRenderer.send("resetSnes");
+}
+
+function resetSnesToMenu() {
+    ipcRenderer.send("resetSnesToMenu");
+}
 
 function toggleDynamicApp(app, cmd) {
     ipcRenderer.send("toggleApp", app, cmd);

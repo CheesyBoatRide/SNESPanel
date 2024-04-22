@@ -125,10 +125,23 @@ function killProcess(appName) {
 }
 
 ipcMain.on('toggleApp', (_event, appName, cmd) => {
-    // start SNI
     if(processes[appName] === undefined) {
         startProcess(appName, cmd);
     } else {
         killProcess(appName);
     }
 })
+
+const snesControls = require(path.join(__dirname, './snes_controller/controller.cjs'))
+
+ipcMain.on('connectToSnes', (_event) => {
+    snesControls.connect(configData.snes_controller.usb2snes_address);
+});
+
+ipcMain.on('resetSnes', (_event) => {
+    snesControls.reset();
+});
+
+ipcMain.on('resetSnesToMenu', (_event) => {
+    snesControls.resetToMenu();
+});
