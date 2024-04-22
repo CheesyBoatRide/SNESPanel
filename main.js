@@ -5,23 +5,9 @@ const path = require('node:path')
 const isDev = process.env.NODE_ENV !== 'production'
 
 const fs = require('node:fs');
+
 let configData = null;
-
 let mainWindow = null;
-let funtoonWindow = null;
-let inputViewerWindow = null;
-
-let sniInstance = null;
-
-function updateSNIStatus() {
-    if(sniInstance === null) {
-        mainWindow.webContents.send("sniNotRunning");
-    } else if(sniInstance.pid === undefined) {
-        mainWindow.webContents.send("sniError");
-    } else {
-        mainWindow.webContents.send("sniRunning");
-    }
-}
 
 function loadSettings() {
     var toml = require('toml');
@@ -31,17 +17,10 @@ function loadSettings() {
           return;
         }
         configData = toml.parse(data);
+        console.log(configData);
+        mainWindow.webContents.send("initAppList", configData.apps);
     });
-}
 
-function startSNI() {
-    const { spawn } = require('child_process');
-    sniInstance = spawn(configData.apps.SNI);
-}
-
-function killSNI() {
-    sniInstance.kill()
-    sniInstance = null;
 }
 
 function createMainWindow() {
@@ -62,6 +41,9 @@ function createMainWindow() {
         mainWindow.webContents.openDevTools();
     }
 
+    mainWindow.webContents.on('did-finish-load', function () {
+        loadSettings();
+    });
 }
 
 // Menu template
@@ -88,9 +70,7 @@ app.whenReady().then(() => {
             createMainWindow();
     })
 
-    loadSettings();
-    
-    updateSNIStatus();
+
 })
 
 
@@ -100,34 +80,49 @@ app.on('window-all-closed', () => {
     }
 })
 
-ipcMain.on('toggleSNI', (event, data) => {
-    // start SNI
-    if(sniInstance === null) {
-        startSNI();
-    } else {
-        killSNI();
-    }
+let processes = {};
 
-    updateSNIStatus();
-})
-
-function createInputViewerWindow() {
-    mainWindow = new BrowserWindow({
-        title: 'SNES Input Viewer',
-        width: 300,
-        height: 150,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false
+function updateAppStatus(appName) {
+    if(appName in processes) {
+        if(processes[appName].childProcess.pid === undefined || processes[appName].childProcess.exitCode !== null) {
+            killProcess(appName);
         }
-    });
-
-    mainWindow.loadFile(path.join(__dirname, './render/inputviewer.html'));
+    }
+    mainWindow.webContents.send("updateAppStatus", appName, appName in processes)
 }
 
-ipcMain.on('openTracker', (event, data) => {
+function startProcess(appName, cmd) {
+    const { spawn } = require('child_process');
+    let process = spawn(cmd, {
+        cwd: require('path').dirname(cmd)
+      });
+    process.on('exit', () => {
+        updateAppStatus(appName);
+    });
 
+    let entry = {
+        childProcess: process
+    };
+
+    processes[appName] = entry;
+
+    updateAppStatus(appName);
+}
+
+function killProcess(appName) {
+    processes[appName].childProcess.kill();
+    delete processes[appName];
+}
+
+ipcMain.on('toggleApp', (_event, appName, cmd) => {
+    // start SNI
+    if(processes[appName] === undefined) {
+        startProcess(appName, cmd);
+    } else {
+        killProcess(appName);
+    }
 })
+
 
 ipcMain.on('openFuntoon', (event, data) => {
     if(funtoonWindow === null) {

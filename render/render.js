@@ -2,34 +2,31 @@
 
 const ipcRenderer = require('electron').ipcRenderer;
 
-const toggleSNI = () => {
-    ipcRenderer.send("toggleSNI");
-};
 
-const startTracker = () => {
-};
+function toggleDynamicApp(app, cmd) {
+    ipcRenderer.send("toggleApp", app, cmd);
+}
 
-const startInputViewer = () => {
-};
+ipcRenderer.on('initAppList', (_event, apps) => {
+    console.log(apps);
+    for(const [key, value] of Object.entries(apps)) {
+        let app_button = document.createElement("button");
+        app_button.id = key + "_button";
+        app_button.textContent = "Start " + key;
+        app_button.style.backgroundColor = '#000000'
+        app_button.addEventListener("click", () => {
+            toggleDynamicApp(key, value);
+        });
+        document.body.appendChild(app_button);
+    }
+})
 
-const openFuntoon = () => {
-    ipcRenderer.send("openFuntoon");
-};
+ipcRenderer.on('updateAppStatus', (_event, app, running) => {
+    let button = document.getElementById(app + "_button");
+    if (running) {
+        button.textContent = "Stop " + app;
+    } else {
+        button.textContent = "Start " + app;
+    }
+})
 
-ipcRenderer.on('sniRunning', () => {
-    let button = document.getElementById("toggleSNIButton");
-    button.textContent = "Stop SNI";
-    button.style.backgroundColor = '#000000';}
-);
-
-ipcRenderer.on('sniNotRunning', () => {
-    let button = document.getElementById("toggleSNIButton");
-    button.textContent = "Start SNI";
-    button.style.backgroundColor = '#000000';
-});
-
-ipcRenderer.on('sniError', () => {
-    let button = document.getElementById("toggleSNIButton");
-    button.textContent = "SNI Failed :(";
-    button.style.backgroundColor = '#444444';
-});

@@ -1,4 +1,8 @@
 [apps]
 SNI = "E:\Speedrunning\sni-v0.0.96-windows-amd64\sni.exe"
-InputViewer = ""
-Tracker = ""
+InputViewer = "E:\Speedrunning\sni-v0.0.96-windows-amd64\InputDisplay\snes_input_display-windows-amd64.exe"
+Tracker = "C:\Program Files (x86)\EmoTracker\EmoTracker.exe"
+SMTileViewer = "E:\Speedrunning\sni-v0.0.96-windows-amd64\SMTileViewer\SMTileViewer.exe"
+
+[webpages]
+Funtoon = "https://funtoon.party/qusb/"
