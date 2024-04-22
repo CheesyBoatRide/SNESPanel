@@ -19,6 +19,16 @@ function loadSettings() {
         configData = toml.parse(data);
         console.log(configData);
         mainWindow.webContents.send("initAppList", configData.apps);
+        mainWindow.webContents.send("initBrowserWindowList", configData.webpages);
+
+        for(const app_name of Object.values(configData.start.apps)) {
+            let path = configData.apps[app_name];
+            if(path !== undefined) {
+                startProcess(app_name, configData.apps[app_name]);
+            } else {
+                console.log("failed to find startup app " + app_name);
+            }
+        }
     });
 
 }

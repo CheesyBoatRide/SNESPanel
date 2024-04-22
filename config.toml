@@ -1,8 +1,13 @@
 [apps]
 SNI = "E:\Speedrunning\sni-v0.0.96-windows-amd64\sni.exe"
+FileViewer = "E:\Speedrunning\sni-v0.0.96-windows-amd64\manage_files.exe"
 InputViewer = "E:\Speedrunning\sni-v0.0.96-windows-amd64\InputDisplay\snes_input_display-windows-amd64.exe"
 Tracker = "C:\Program Files (x86)\EmoTracker\EmoTracker.exe"
 SMTileViewer = "E:\Speedrunning\sni-v0.0.96-windows-amd64\SMTileViewer\SMTileViewer.exe"
+LiveSplit = "E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe"
 
 [webpages]
 Funtoon = "https://funtoon.party/qusb/"
+
+[start]
+apps = ["SNI", "Tracker"]
