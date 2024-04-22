@@ -132,16 +132,3 @@ ipcMain.on('toggleApp', (_event, appName, cmd) => {
         killProcess(appName);
     }
 })
-
-
-ipcMain.on('openFuntoon', (event, data) => {
-    if(funtoonWindow === null) {
-        funtoonWindow = new BrowserWindow({
-            title: 'Funtoon',
-            width: 800,
-            height: 600
-        });
-    
-        funtoonWindow.loadURL('https://funtoon.party/qusb/');
-    }
-})
