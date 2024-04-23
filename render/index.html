@@ -12,12 +12,18 @@
 
 <body>
     <div>
-        <button class="collapsible">SNES Controls</button>
-        <div class="content">
+        <button class="all active" type="button">All</button>
+
+
+        <button class="collapsible active" type="button">SNES Controls</button>
+        <section class="content">
             <button class="controlbutton" onclick="connectToSnes()">Connect SNES</button>
             <button class="controlbutton" onclick="resetSnes()">Reset SNES</button>
             <button class="controlbutton" onclick="resetSnesToMenu()">Reset SNES to Menu</button>
-        </div>
+        </section>
+
+        <button class="collapsible active" type="button">Custom Apps</button>
+        <section class="content" id="customAppDrawer"></section>
     </div>
 </body>
 

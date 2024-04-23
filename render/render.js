@@ -28,7 +28,10 @@ ipcRenderer.on('initAppList', (_event, apps) => {
         app_button.addEventListener("click", () => {
             toggleDynamicApp(key, value);
         });
-        document.body.appendChild(app_button);
+
+        let drawer = document.getElementById("customAppDrawer");
+
+        drawer.appendChild(app_button);
     }
 })
 
@@ -44,33 +47,53 @@ ipcRenderer.on('updateAppStatus', (_event, app, running) => {
 ipcRenderer.on('initBrowserWindowList', (_event, pages) => {
     for (const [name, url] of Object.entries(pages)) {
         let button = document.createElement("button");
-        button.className = 'collapsible';
+        button.className = 'collapsible active';
         button.textContent = name;
-        let div = document.createElement("div");
-        div.className = 'content';
+        let section = document.createElement("section");
+        section.className = 'content';
         let embed = document.createElement("EMBED");
         embed.width = "100%";
         embed.height = "600px";
         embed.src = url;
         embed.console = function() {};
-        div.appendChild(embed);
+        section.appendChild(embed);
         document.body.appendChild(button);
-        document.body.appendChild(div);
+        document.body.appendChild(section);
     }
 
-    var coll = document.getElementsByClassName("collapsible");
-    var i;
+    const col = document.querySelectorAll(".collapsible");
 
-    for (i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function () {
-            this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.maxHeight) {
-                content.style.maxHeight = null;
-            } else {
-                content.style.maxHeight = "100%";
-            }
+    for (let c of col) {
+      c.addEventListener("click", collapse);
+    }
+    
+    function collapse(e) {
+      this.classList.toggle("active");
+      const content = this.nextElementSibling;
+      content.classList.toggle('hide');
+    }
+    
+    const all = document.querySelector(".all");
+    
+    all.addEventListener('click', collapseAll);
+    
+    function collapseAll(e) {
+      const col = document.querySelectorAll('.collapsible');
+      const con = document.querySelectorAll('.content');
+    
+      if (e.target.matches('.all')) {
+        this.classList.toggle("active");
+    
+        col.forEach((button, index) => {
+          if (e.target.matches('.active')) {
+            button.classList.add('active');
+            con[index].classList.remove('hide');
+          } else {
+            button.classList.remove('active');
+            con[index].classList.add('hide');
+          }
         });
+      }
     }
 })
 
