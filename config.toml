@@ -8,6 +8,7 @@ LiveSplit = "E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe"
 
 [webpages]
 Funtoon = "https://funtoon.party/qusb/"
+SubversionTracker = "https://cout.github.io/sm_subversion_tracker/"
 
 [start]
 apps = ["SNI", "Tracker"]

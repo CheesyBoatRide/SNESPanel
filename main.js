@@ -47,9 +47,9 @@ function createMainWindow() {
     mainWindow.loadFile(path.join(__dirname, './render/index.html'));
 
     // open devtools in dev
-    if (isDev) {
-        mainWindow.webContents.openDevTools();
-    }
+    // if (isDev) {
+    //     mainWindow.webContents.openDevTools();
+    // }
 
     mainWindow.webContents.on('did-finish-load', function () {
         loadSettings();
