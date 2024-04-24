@@ -45,12 +45,6 @@ button {
     display: none;
 }
 
-.trials {
-    width: 100%;
-    table-layout: fixed;
-    border-spacing: 0px;
-}
-
 td {
     width: 33%;
     padding: 1.5px;

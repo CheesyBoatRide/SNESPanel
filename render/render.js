@@ -2,10 +2,6 @@
 
 const ipcRenderer = require('electron').ipcRenderer;
 
-function connectToSnes() {
-    ipcRenderer.send("connectToSnes");
-}
-
 function resetSnes() {
     ipcRenderer.send("resetSnes");
 }
@@ -17,6 +13,11 @@ function resetSnesToMenu() {
 function toggleDynamicApp(app, cmd) {
     ipcRenderer.send("toggleApp", app, cmd);
 }
+
+ipcRenderer.on('setSNESControllerNotesBlurb', (_event, blurb) => {
+  let pre = document.getElementById("SNESControllerNotesBlurb");
+  pre.textContent = blurb;
+});
 
 ipcRenderer.on('initAppList', (_event, apps) => {
     for (const [key, value] of Object.entries(apps)) {
@@ -59,6 +60,11 @@ ipcRenderer.on('initBrowserWindowList', (_event, pages) => {
         section.appendChild(embed);
         document.body.appendChild(button);
         document.body.appendChild(section);
+
+        // refresh
+        button.addEventListener("contextmenu", function () {
+          embed.src = url;
+        });
     }
 
     const col = document.querySelectorAll(".collapsible");

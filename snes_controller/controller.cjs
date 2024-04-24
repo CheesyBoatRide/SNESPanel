@@ -7,8 +7,11 @@ var wsConnection = {};
 
 var lastRequest = "";
 
+var snesAddress = "";
+
 client.on('connectFailed', function(error) {
     console.log('Connect Error: ' + error.toString());
+    reconnect();
 });
 
 function recievedDeviceList(msg) {
@@ -33,6 +36,10 @@ function decodeMsg(msg) {
     lastRequest = "";
 }
 
+function reconnect() {
+    setTimeout(function() { snesConnect(snesAddress); }, 1000);
+}
+
 client.on('connect', function(connection) {
 
     console.log('WebSocket Client Connected');
@@ -41,10 +48,12 @@ client.on('connect', function(connection) {
 
     connection.on('error', function(error) {
         console.log("Connection Error: " + error.toString());
+        reconnect();
     });
 
     connection.on('close', function() {
         console.log('echo-protocol Connection Closed');
+        reconnect();
     });
 
     connection.on('message', function(message) {
@@ -66,6 +75,7 @@ client.on('connect', function(connection) {
 });
 
 function snesConnect(address) {
+    snesAddress = address;
     client.connect(address);
 }
 

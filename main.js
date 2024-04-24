@@ -29,6 +29,10 @@ function loadSettings() {
                 console.log("failed to find startup app " + app_name);
             }
         }
+
+        mainWindow.webContents.send("setSNESControllerNotesBlurb", configData.snes_controller.notes_blurb);
+
+        snesControls.connect(configData.snes_controller.usb2snes_address);
     });
 
 }
@@ -48,7 +52,7 @@ function createMainWindow() {
 
     // open devtools in dev
     // if (isDev) {
-    //     mainWindow.webContents.openDevTools();
+         //mainWindow.webContents.openDevTools();
     // }
 
     mainWindow.webContents.on('did-finish-load', function () {
@@ -133,10 +137,6 @@ ipcMain.on('toggleApp', (_event, appName, cmd) => {
 })
 
 const snesControls = require(path.join(__dirname, './snes_controller/controller.cjs'))
-
-ipcMain.on('connectToSnes', (_event) => {
-    snesControls.connect(configData.snes_controller.usb2snes_address);
-});
 
 ipcMain.on('resetSnes', (_event) => {
     snesControls.reset();

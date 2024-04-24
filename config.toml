@@ -15,5 +15,11 @@ apps = ["SNI", "Tracker"]
 
 [snes_controller]
 usb2snes_address = "ws://localhost:8080/"
-reset_hotkey = ""
-menu_hotkey = ""
+notes_blurb = '''
+Livesplit Hotkeys:
+    F1 - Reset
+    F2 - Undo
+    F3 - Pause
+    F4 - Skip
+    F5 - Start/Split
+    '''
