@@ -56,7 +56,7 @@ function createMainWindow() {
 
     // open devtools in dev
     if (isDev) {
-         mainWindow.webContents.openDevTools();
+         //mainWindow.webContents.openDevTools();
     }
 
     mainWindow.webContents.on('did-finish-load', function () {

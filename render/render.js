@@ -1,6 +1,6 @@
-var button_color = '#2F236D';
-var error_state = 'rgb(230, 58, 54)';
-var running_state = '#236D2F';
+var button_color = '#54585a';
+var error_state = '#C1121C';
+var running_state = '#007243';
 
 
 const ipcRenderer = require('electron').ipcRenderer;
