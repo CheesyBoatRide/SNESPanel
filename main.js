@@ -10,6 +10,9 @@ let configData = null;
 let mainWindow = null;
 
 function loadSettings() {
+    
+    mainWindow.webContents.send("snesConnectionStatus", false);
+
     var toml = require('toml');
     fs.readFile(path.join(__dirname, 'config.toml'), 'utf8', (err, data) => {
         if (err) {
@@ -32,6 +35,7 @@ function loadSettings() {
 
         mainWindow.webContents.send("setSNESControllerNotesBlurb", configData.snes_controller.notes_blurb);
 
+        snesControls.init(mainWindow);
         snesControls.connect(configData.snes_controller.usb2snes_address);
     });
 
@@ -51,9 +55,9 @@ function createMainWindow() {
     mainWindow.loadFile(path.join(__dirname, './render/index.html'));
 
     // open devtools in dev
-    // if (isDev) {
-         //mainWindow.webContents.openDevTools();
-    // }
+    if (isDev) {
+         mainWindow.webContents.openDevTools();
+    }
 
     mainWindow.webContents.on('did-finish-load', function () {
         loadSettings();

@@ -1,15 +1,25 @@
+:root {
+    --background_color : #23616D;
+    --button_color : #2F236D;
+    --error_state : rgb(230, 58, 54);
+    --running_state : #236D2F;
+    --highlight : #54236D;
+}
+
+
 body {
     overflow-y: scroll;
-    font: 900 18px/1.5 Verdana;
+    font: 900 18px/1.5 Verdana ;
+    background-color: var(--background_color);
 }
 
 button {
     display: block;
-    background-color: #007784;
+    background-color: var(--button_color);
     color: #FFF;
     cursor: pointer;
     width: 97%;
-    border: 2px solid #000;
+    border: 2px solid #FFF;
     border-radius: 15px;
     text-align: center;
     outline: none;
@@ -25,7 +35,7 @@ button {
 
 .collapsible:hover,
 .all:hover {
-    background-color: #0066FF;
+    background-color: var(--highlight);
 }
 
 .content {
@@ -33,12 +43,12 @@ button {
     width: 96.25%;
     display: block;
     overflow: hidden;
-    border: 2px solid #000;
+    border: 2px solid #FFF;
     border-top: 0px;
-    background-color: #FFF;
+    background-color: var(--background_color);
     border-radius: 0px 0px 15px 15px;
     margin: 0 auto;
-    font: 500 16px/1.5 Arial;
+    font: 500 16px/1.5 Verdana ;
 }
 
 .hide {
@@ -66,8 +76,16 @@ td {
     height: 40px;
     border: none;
     border-radius: 7px;
-    background-color: #000000;
-    color: white;
+    background-color: var(--button_color);
+    color: #FFF;
     font-size: 18px;
     cursor: pointer;
 }
+
+pre {
+    display: block;
+    font-family: Verdana ;
+    white-space: pre;
+    margin: 1em 0;
+    color: #FFF;
+  }

@@ -11,7 +11,7 @@ Funtoon = "https://funtoon.party/qusb/"
 SubversionTracker = "https://cout.github.io/sm_subversion_tracker/"
 
 [start]
-apps = ["SNI", "Tracker"]
+apps = ["SNI"]
 
 [snes_controller]
 usb2snes_address = "ws://localhost:8080/"

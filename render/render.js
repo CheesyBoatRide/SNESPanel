@@ -1,3 +1,6 @@
+var button_color = '#2F236D';
+var error_state = 'rgb(230, 58, 54)';
+var running_state = '#236D2F';
 
 
 const ipcRenderer = require('electron').ipcRenderer;
@@ -25,7 +28,7 @@ ipcRenderer.on('initAppList', (_event, apps) => {
         app_button.id = key + "_button";
         app_button.className = "appbutton";
         app_button.textContent = "Start " + key;
-        app_button.style.backgroundColor = '#000000'
+        app_button.style.backgroundColor = button_color;
         app_button.addEventListener("click", () => {
             toggleDynamicApp(key, value);
         });
@@ -40,8 +43,10 @@ ipcRenderer.on('updateAppStatus', (_event, app, running) => {
     let button = document.getElementById(app + "_button");
     if (running) {
         button.textContent = "Stop " + app;
+        button.style.backgroundColor = running_state;
     } else {
         button.textContent = "Start " + app;
+        button.style.backgroundColor = button_color;
     }
 })
 
@@ -103,3 +108,10 @@ ipcRenderer.on('initBrowserWindowList', (_event, pages) => {
     }
 })
 
+ipcRenderer.on('snesConnectionStatus', (_event, connected) => {
+  let elements = document.querySelectorAll('.controlbutton');
+  for(element of elements) {
+    element.style.backgroundColor = connected ? button_color : error_state;
+    element.disabled = !connected;
+  }
+});

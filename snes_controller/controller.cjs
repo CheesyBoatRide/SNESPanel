@@ -9,54 +9,67 @@ var lastRequest = "";
 
 var snesAddress = "";
 
-client.on('connectFailed', function(error) {
+var mainWindow = undefined;
+
+function init(window) {
+    mainWindow = window;
+}
+
+client.on('connectFailed', function (error) {
     console.log('Connect Error: ' + error.toString());
     reconnect();
 });
 
 function recievedDeviceList(msg) {
     let Results = msg.Results;
-    for(const result of Results) {
-        // for now just do the first one
-        let attach_to_device = {
-            Opcode: "Attach",
-            Space: "SNES",
-            Operands: [result]
-        };
-        lastRequest = "Attach";
-        console.log(JSON.stringify(attach_to_device));
-        wsConnection.send(JSON.stringify(attach_to_device));
+    if (Results === undefined || Results.length == 0) {
+        reconnect();
+    } else {
+        for (const result of Results) {
+            // for now just do the first one
+            let attach_to_device = {
+                Opcode: "Attach",
+                Space: "SNES",
+                Operands: [result]
+            };
+            lastRequest = "Attach";
+            console.log(JSON.stringify(attach_to_device));
+            wsConnection.send(JSON.stringify(attach_to_device));
+
+            mainWindow.webContents.send("snesConnectionStatus", true);
+        }
     }
 }
 
 function decodeMsg(msg) {
-    if(lastRequest == "DeviceList") {
+    if (lastRequest == "DeviceList") {
         recievedDeviceList(msg)
     }
     lastRequest = "";
 }
 
 function reconnect() {
-    setTimeout(function() { snesConnect(snesAddress); }, 1000);
+    mainWindow.webContents.send("snesConnectionStatus", false);
+    setTimeout(function () { snesConnect(snesAddress); }, 1000);
 }
 
-client.on('connect', function(connection) {
+client.on('connect', function (connection) {
 
     console.log('WebSocket Client Connected');
-    
+
     wsConnection = connection;
 
-    connection.on('error', function(error) {
+    connection.on('error', function (error) {
         console.log("Connection Error: " + error.toString());
         reconnect();
     });
 
-    connection.on('close', function() {
+    connection.on('close', function () {
         console.log('echo-protocol Connection Closed');
         reconnect();
     });
 
-    connection.on('message', function(message) {
+    connection.on('message', function (message) {
         if (message.type === 'utf8') {
             console.log("Received: '" + message.utf8Data + "'");
             decodeMsg(JSON.parse(message.utf8Data));
@@ -66,8 +79,8 @@ client.on('connect', function(connection) {
 
 
     let device_list = {
-        Opcode : "DeviceList",
-        Space : "SNES"
+        Opcode: "DeviceList",
+        Space: "SNES"
     };
     lastRequest = "DeviceList";
     console.log(JSON.stringify(device_list));
@@ -98,6 +111,7 @@ function snesResetToMenu() {
 }
 
 module.exports = {
+    init: init,
     connect: snesConnect,
     reset: snesReset,
     resetToMenu: snesResetToMenu
