@@ -21,13 +21,19 @@ function loadSettings() {
         }
         configData = toml.parse(data);
         console.log(configData);
+
+        for (const app_name of Object.keys(configData.apps)) {
+            if(configData.apps[app_name].display === undefined) {
+                configData.apps[app_name].display = app_name;
+            }
+        }
+
         mainWindow.webContents.send("initAppList", configData.apps);
         mainWindow.webContents.send("initBrowserWindowList", configData.webpages);
 
         for(const app_name of Object.values(configData.start.apps)) {
-            let path = configData.apps[app_name];
-            if(path !== undefined) {
-                startProcess(app_name, configData.apps[app_name]);
+            if(configData.apps[app_name] !== undefined) {
+                startProcess(configData.apps[app_name]);
             } else {
                 console.log("failed to find startup app " + app_name);
             }
@@ -56,7 +62,7 @@ function createMainWindow() {
 
     // open devtools in dev
     if (isDev) {
-         //mainWindow.webContents.openDevTools();
+         mainWindow.webContents.openDevTools();
     }
 
     mainWindow.webContents.on('did-finish-load', function () {
@@ -109,22 +115,26 @@ function updateAppStatus(appName) {
     mainWindow.webContents.send("updateAppStatus", appName, appName in processes)
 }
 
-function startProcess(appName, cmd) {
+function startProcess(app_desc) {
     const { spawn } = require('child_process');
-    let process = spawn(cmd, {
-        cwd: require('path').dirname(cmd)
+
+    let working_dir = app_desc.working_directory !== undefined ? app_desc.working_directory :
+        require('path').dirname(app_desc.cmd);
+
+    let process = spawn(app_desc.cmd, {
+        cwd: working_dir
       });
     process.on('exit', () => {
-        updateAppStatus(appName);
+        updateAppStatus(app_desc.display);
     });
 
     let entry = {
         childProcess: process
     };
 
-    processes[appName] = entry;
+    processes[app_desc.display] = entry;
 
-    updateAppStatus(appName);
+    updateAppStatus(app_desc.display);
 }
 
 function killProcess(appName) {
@@ -132,11 +142,11 @@ function killProcess(appName) {
     delete processes[appName];
 }
 
-ipcMain.on('toggleApp', (_event, appName, cmd) => {
-    if(processes[appName] === undefined) {
-        startProcess(appName, cmd);
+ipcMain.on('toggleApp', (_event, app_desc) => {
+    if(processes[app_desc.display] === undefined) {
+        startProcess(app_desc);
     } else {
-        killProcess(appName);
+        killProcess(app_desc.display);
     }
 })
 

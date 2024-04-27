@@ -13,8 +13,8 @@ function resetSnesToMenu() {
     ipcRenderer.send("resetSnesToMenu");
 }
 
-function toggleDynamicApp(app, cmd) {
-    ipcRenderer.send("toggleApp", app, cmd);
+function toggleDynamicApp(app_desc) {
+    ipcRenderer.send("toggleApp", app_desc);
 }
 
 ipcRenderer.on('setSNESControllerNotesBlurb', (_event, blurb) => {
@@ -25,12 +25,12 @@ ipcRenderer.on('setSNESControllerNotesBlurb', (_event, blurb) => {
 ipcRenderer.on('initAppList', (_event, apps) => {
     for (const [key, value] of Object.entries(apps)) {
         let app_button = document.createElement("button");
-        app_button.id = key + "_button";
+        app_button.id = value.display + "_button";
         app_button.className = "appbutton";
-        app_button.textContent = "Start " + key;
+        app_button.textContent = "Start " + value.display;
         app_button.style.backgroundColor = button_color;
         app_button.addEventListener("click", () => {
-            toggleDynamicApp(key, value);
+            toggleDynamicApp(value);
         });
 
         let drawer = document.getElementById("customAppDrawer");

@@ -1,6 +1,4 @@
 Hotkeys for SNES Controls
-usb2snes connection status UI reflection
-Style for UI
 Help dialog
 Change settings to JSON
     Support CLI args, env and cwd for app launching

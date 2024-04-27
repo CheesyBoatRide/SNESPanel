@@ -1,20 +1,35 @@
-[apps]
-SNI = "E:\Speedrunning\sni-v0.0.96-windows-amd64\sni.exe"
-FileViewer = "E:\Speedrunning\sni-v0.0.96-windows-amd64\manage_files.exe"
-InputViewer = "E:\Speedrunning\sni-v0.0.96-windows-amd64\InputDisplay\snes_input_display-windows-amd64.exe"
-Tracker = "C:\Program Files (x86)\EmoTracker\EmoTracker.exe"
-SMTileViewer = "E:\Speedrunning\sni-v0.0.96-windows-amd64\SMTileViewer\SMTileViewer.exe"
-LiveSplit = "E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe"
+[apps.SNI]
+cmd = "E:\Speedrunning\sni-v0.0.96-windows-amd64\sni.exe"
+working_directory="E:\Speedrunning\sni-v0.0.96-windows-amd64"
+args=""
+env="SNI_USB2SNES_LISTEN_ADDRS=0.0.0.0:23074,0.0.0.0:8080"
+display="SNI"
+
+[apps.FileViewer]
+cmd = "E:\Speedrunning\sni-v0.0.96-windows-amd64\manage_files.exe"
+display = "File Explorer"
+
+[apps.InputViewer]
+cmd = "E:\Speedrunning\sni-v0.0.96-windows-amd64\InputDisplay\snes_input_display-windows-amd64.exe"
+
+[apps.Tracker]
+cmd = "C:\Program Files (x86)\EmoTracker\EmoTracker.exe"
+
+[apps.SMTileViewer]
+cmd = "E:\Speedrunning\sni-v0.0.96-windows-amd64\SMTileViewer\SMTileViewer.exe"
+
+[apps.LiveSplit]
+cmd = "E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe"
 
 [webpages]
 Funtoon = "https://funtoon.party/qusb/"
-SubversionTracker = "https://cout.github.io/sm_subversion_tracker/"
+"Subversion Tracker" = "https://cout.github.io/sm_subversion_tracker/"
 
 [start]
 apps = ["SNI"]
 
 [snes_controller]
-usb2snes_address = "ws://localhost:8080/"
+usb2snes_address = "ws://localhost:23074/"
 notes_blurb = '''
 Livesplit Hotkeys:
     F1 - Reset
