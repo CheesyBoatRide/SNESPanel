@@ -24,13 +24,14 @@ function loadSettings() {
             if(configData.apps[app_name].display === undefined) {
                 configData.apps[app_name].display = app_name;
             }
+            configData.apps[app_name].exists = fs.existsSync(configData.apps[app_name].cmd);
         }
 
         mainWindow.webContents.send("initAppList", configData.apps);
         mainWindow.webContents.send("initBrowserWindowList", configData.webpages);
 
         for(const app_name of Object.values(configData.start.apps)) {
-            if(configData.apps[app_name] !== undefined) {
+            if(configData.apps[app_name] !== undefined & configData.apps[app_name].exists) {
                 startProcess(configData.apps[app_name]);
             } else {
                 console.log("failed to find startup app " + app_name);
@@ -68,6 +69,8 @@ app.whenReady().then(() => {
     
     createMainWindow()
 
+    mainWindow.webContents.openDevTools();
+
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0)
             createMainWindow();
@@ -85,13 +88,21 @@ app.on('window-all-closed', () => {
 
 let processes = {};
 
-function updateAppStatus(appName) {
-    if(appName in processes) {
-        if(processes[appName].childProcess.pid === undefined || processes[appName].childProcess.exitCode !== null) {
-            killProcess(appName);
+function updateAppStatus(app_desc) {
+    if(app_desc.display in processes) {
+        if(processes[app_desc.display].childProcess.pid === undefined || processes[app_desc.display].childProcess.exitCode !== null) {
+            killProcess(app_desc.display);
         }
     }
-    mainWindow.webContents.send("updateAppStatus", appName, appName in processes)
+
+    let status = 'error';
+    if( app_desc.display in processes) {
+        status = 'running';
+    } else if(app_desc.exists) {
+        status = 'stopped';
+    }
+
+    mainWindow.webContents.send("updateAppStatus", app_desc.display, status)
 }
 
 function startProcess(app_desc) {
@@ -110,7 +121,7 @@ function startProcess(app_desc) {
         env: env
       });
     process.on('exit', () => {
-        updateAppStatus(app_desc.display);
+        updateAppStatus(app_desc);
     });
 
     let entry = {
@@ -119,7 +130,7 @@ function startProcess(app_desc) {
 
     processes[app_desc.display] = entry;
 
-    updateAppStatus(app_desc.display);
+    updateAppStatus(app_desc);
 }
 
 function killProcess(appName) {

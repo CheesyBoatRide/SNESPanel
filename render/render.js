@@ -22,13 +22,29 @@ ipcRenderer.on('setSNESControllerNotesBlurb', (_event, blurb) => {
   pre.textContent = blurb;
 });
 
+function updateAppStatus(app, status) {
+  let button = document.getElementById(app + "_button");
+  if (status === 'running') {
+      button.textContent = "Stop " + app;
+      button.style.backgroundColor = running_state;
+  } else if (status === 'stopped') {
+      button.textContent = "Start " + app;
+      button.style.backgroundColor = button_color;
+  } else if (status === 'error') {
+    button.textContent = app + ' (Invalid)';
+    button.style.backgroundColor = error_state;
+    button.disabled = true;
+  } else {
+    // error
+    console.log("Invalid app status");
+  }
+}
+
 ipcRenderer.on('initAppList', (_event, apps) => {
     for (const [key, value] of Object.entries(apps)) {
         let app_button = document.createElement("button");
         app_button.id = value.display + "_button";
         app_button.className = "appbutton";
-        app_button.textContent = "Start " + value.display;
-        app_button.style.backgroundColor = button_color;
         app_button.addEventListener("click", () => {
             toggleDynamicApp(value);
         });
@@ -36,18 +52,13 @@ ipcRenderer.on('initAppList', (_event, apps) => {
         let drawer = document.getElementById("customAppDrawer");
 
         drawer.appendChild(app_button);
+
+        updateAppStatus(value.display, value.exists ? 'stopped' : 'error');
     }
 })
 
-ipcRenderer.on('updateAppStatus', (_event, app, running) => {
-    let button = document.getElementById(app + "_button");
-    if (running) {
-        button.textContent = "Stop " + app;
-        button.style.backgroundColor = running_state;
-    } else {
-        button.textContent = "Start " + app;
-        button.style.backgroundColor = button_color;
-    }
+ipcRenderer.on('updateAppStatus', (_event, app, status) => {
+  updateAppStatus(app, status);
 })
 
 ipcRenderer.on('initBrowserWindowList', (_event, pages) => {
