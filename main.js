@@ -12,7 +12,7 @@ function loadSettings() {
     mainWindow.webContents.send("snesConnectionStatus", false);
 
     var toml = require('toml');
-    fs.readFile(path.join(__dirname, 'resources/config.toml'), 'utf8', (err, data) => {
+    fs.readFile('./config.toml', 'utf8', (err, data) => {
         if (err) {
           console.error(err);
           return;
@@ -56,31 +56,17 @@ function createMainWindow() {
         }
     });
 
-    mainWindow.loadFile(path.join(__dirname, './render/index.html'));
+    mainWindow.loadFile('./render/index.html');
 
     mainWindow.webContents.on('did-finish-load', function () {
         loadSettings();
     });
 }
 
-// Menu template
-const menu = [
-    {
-        label: 'File',
-        submenu: [
-            {
-                label: 'Quit',
-                click: () => app.quit(),
-            }
-        ]
-    }
-]
-
 app.whenReady().then(() => {
+    Menu.setApplicationMenu(null);
+    
     createMainWindow()
-
-    const mainMenu = Menu.buildFromTemplate(menu);
-    Menu.setApplicationMenu(mainMenu);
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0)
@@ -149,7 +135,7 @@ ipcMain.on('toggleApp', (_event, app_desc) => {
     }
 })
 
-const snesControls = require(path.join(__dirname, './snes_controller/controller.cjs'))
+const snesControls = require('./snes_controller/controller.cjs')
 
 ipcMain.on('resetSnes', (_event) => {
     snesControls.reset();
