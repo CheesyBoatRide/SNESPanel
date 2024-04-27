@@ -2,8 +2,6 @@ const { app, BrowserWindow, Menu, ipcMain } = require('electron')
 // include the Node.js 'path' module at the top of your file
 const path = require('node:path')
 
-const isDev = process.env.NODE_ENV !== 'production'
-
 const fs = require('node:fs');
 
 let configData = null;
@@ -14,7 +12,7 @@ function loadSettings() {
     mainWindow.webContents.send("snesConnectionStatus", false);
 
     var toml = require('toml');
-    fs.readFile(path.join(__dirname, 'config.toml'), 'utf8', (err, data) => {
+    fs.readFile(path.join(__dirname, 'resources/config.toml'), 'utf8', (err, data) => {
         if (err) {
           console.error(err);
           return;
@@ -59,11 +57,6 @@ function createMainWindow() {
     });
 
     mainWindow.loadFile(path.join(__dirname, './render/index.html'));
-
-    // open devtools in dev
-    if (isDev) {
-         mainWindow.webContents.openDevTools();
-    }
 
     mainWindow.webContents.on('did-finish-load', function () {
         loadSettings();

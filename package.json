@@ -6,15 +6,27 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "author": "cheesyboatride",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "electron": "^29.2.0"
+    "electron": "^29.2.0",
+    "electron-builder": "^24.13.3"
   },
   "dependencies": {
     "toml": "^3.0.0",
     "websocket": "^1.0.34"
+  },
+  "build": {
+    "productName": "SNES Control Panel",
+    "appId": "com.cheesyboatride.snes_panel",
+    "win": {
+        "target": [
+            "portable"
+        ]
+    }
   }
 }
