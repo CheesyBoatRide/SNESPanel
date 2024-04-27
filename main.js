@@ -120,9 +120,15 @@ function startProcess(app_desc) {
 
     let working_dir = app_desc.working_directory !== undefined ? app_desc.working_directory :
         require('path').dirname(app_desc.cmd);
+    let env = app_desc.env !== undefined ? app_desc.env : "";
+    let args = app_desc.args !== undefined ? app_desc.args : [];
 
-    let process = spawn(app_desc.cmd, {
-        cwd: working_dir
+    console.log(app_desc.cmd);
+    console.log(args);
+
+    let process = spawn(app_desc.cmd, args, {
+        cwd: working_dir,
+        env: env
       });
     process.on('exit', () => {
         updateAppStatus(app_desc.display);
