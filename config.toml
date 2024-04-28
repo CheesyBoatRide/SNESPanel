@@ -2,7 +2,7 @@
 cmd = 'E:\Speedrunning\sni-v0.0.96-windows-amd64\sni.exe'
 working_directory='E:\Speedrunning\sni-v0.0.96-windows-amd64'
 args=[]
-env='SNI_USB2SNES_LISTEN_ADDRS=0.0.0.0:23074,0.0.0.0:8080'
+env = {SNI_USB2SNES_LISTEN_ADDRS='0.0.0.0:23074,0.0.0.0:8080'}
 display='SNI'
 
 [apps.FileViewer]

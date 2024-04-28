@@ -142,16 +142,17 @@ function startProcess(app_desc) {
     console.log(app_desc.cmd);
     console.log(args);
 
-    let process = spawn(app_desc.cmd, args, {
+    let child_process = spawn(app_desc.cmd, args, {
         cwd: working_dir,
-        env: env
+        env: {...env, ...process.env},
+        stdio: 'inherit',
       });
-    process.on('exit', () => {
+    child_process.on('exit', () => {
         updateAppStatus(app_desc);
     });
 
     let entry = {
-        childProcess: process
+        childProcess: child_process
     };
 
     processes[app_desc.display] = entry;
