@@ -1,3 +1,2 @@
 Hotkeys for SNES Controls
 Help dialog
-packaging release

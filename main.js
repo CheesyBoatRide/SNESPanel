@@ -1,5 +1,4 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron')
-// include the Node.js 'path' module at the top of your file
 const path = require('node:path')
 
 const fs = require('node:fs');
