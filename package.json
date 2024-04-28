@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --win=portable"
+    "dist": "electron-builder"
   },
   "author": "cheesyboatride",
   "license": "GPL-3.0-or-later",
@@ -23,9 +23,10 @@
   "build": {
     "productName": "SNES Control Panel",
     "appId": "com.cheesyboatride.snes_panel",
-    "extraResources": [
+    "extraFiles": [
       {
-          "filter": ["./config.toml"]
+          "to": "config.toml",
+          "from": "config.toml"
       }
   ]
   }
