@@ -132,4 +132,4 @@ dist
 
 # added
 package-lock.json
-build/
+bin/
