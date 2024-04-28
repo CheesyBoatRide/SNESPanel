@@ -12,7 +12,18 @@ function loadSettings() {
     mainWindow.webContents.send("snesConnectionStatus", false);
 
     var toml = require('toml');
-    fs.readFile('./config.toml', 'utf8', (err, data) => {
+
+    let configFile = './config.toml';
+    if(!fs.existsSync(configFile)) {
+        configFile = path.join(process.env.PORTABLE_EXECUTABLE_DIR, 'config.toml');
+    }
+
+    if(!fs.existsSync(configFile)) {
+        alert("Unable to find config.toml file.  See ReadMe for help.");
+        app.exit();
+    }
+
+    fs.readFile(configFile, 'utf8', (err, data) => {
         if (err) {
           console.error(err);
           return;

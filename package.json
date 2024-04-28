@@ -23,11 +23,6 @@
   "build": {
     "productName": "SNES Control Panel",
     "appId": "com.cheesyboatride.snes_panel",
-    "extraFiles": [
-      {
-          "to": "config.toml",
-          "from": "config.toml"
-      }
-  ]
+    "win": { "target": [ "portable" ] }
   }
 }
