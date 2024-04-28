@@ -64,12 +64,28 @@ function createMainWindow() {
     });
 }
 
-app.whenReady().then(() => {
-    Menu.setApplicationMenu(null);
-    
-    createMainWindow()
+// Menu template
+const menu = [
+    {
+        label: 'File',
+        submenu: [
+            {
+                label: 'Dev Tools',
+                click: () => mainWindow.webContents.openDevTools(),
+            },
+            {
+                label: 'Quit',
+                click: () => app.quit(),
+            }
+        ]
+    }
+]
 
-    mainWindow.webContents.openDevTools();
+app.whenReady().then(() => {
+    const mainMenu = Menu.buildFromTemplate(menu);
+    Menu.setApplicationMenu(mainMenu);
+    
+    createMainWindow();
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0)

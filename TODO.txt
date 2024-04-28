@@ -1,5 +1,3 @@
 Hotkeys for SNES Controls
 Help dialog
-Change settings to JSON
-    Support CLI args, env and cwd for app launching
 packaging release
