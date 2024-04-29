@@ -29,7 +29,7 @@ display = 'Timer'
 args = ['-l', 'E:\Speedrunning\splits\timer.lsl', '-s', 'E:\Speedrunning\splits\timer.lss']
 
 [webpages]
-Funtoon = 'https://funtoon.party/qusb/'
+Funtoon = 'https://funtoon.party/funtoon2snes/'
 'Subversion Tracker' = 'https://cout.github.io/sm_subversion_tracker/'
 
 [start]

@@ -23,7 +23,7 @@ In order to utilize the SNES Control Panel, you will need to modify the `config.
 - Add any webpages that you want to be embedded into your panel by adding entries to the `webpages` group, e.g.:
     ```
     [webpages]
-    Funtoon = 'https://funtoon.party/qusb/'
+    Funtoon = 'https://funtoon.party/funtoon2snes/'
     ```
     - Tips: 
         - The key supplied will be the display name on the header in the panel.  If you want spaces, be sure to surround the key with single quotes!
