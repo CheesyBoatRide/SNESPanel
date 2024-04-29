@@ -23,6 +23,10 @@
   "build": {
     "productName": "SNES Control Panel",
     "appId": "com.cheesyboatride.snes_panel",
-    "win": { "target": [ "portable" ] }
+    "win": {
+      "target": [
+        "portable"
+      ]
+    }
   }
 }

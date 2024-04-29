@@ -105,13 +105,24 @@ app.whenReady().then(() => {
 
 })
 
+let processes = {};
+
 app.on('window-all-closed', () => {
+
+    for (const proc of Object.values(processes)) {
+        const { spawn } = require('child_process');
+        let cmd = 'taskkill';
+        let args = ['/pid', proc.childProcess.pid];
+
+        spawn(cmd, args, {
+            detached: true
+          });
+    }
+
     if (process.platform !== 'darwin') {
         app.quit();
     }
 })
-
-let processes = {};
 
 function updateAppStatus(app_desc) {
     if(app_desc.display in processes) {
@@ -145,8 +156,10 @@ function startProcess(app_desc) {
         cwd: working_dir,
         env: {...env, ...process.env},
         stdio: 'inherit',
+        detached: true
       });
     child_process.on('exit', () => {
+        delete processes[app_desc.display];
         updateAppStatus(app_desc);
     });
 
@@ -160,8 +173,18 @@ function startProcess(app_desc) {
 }
 
 function killProcess(appName) {
-    processes[appName].childProcess.kill();
-    delete processes[appName];
+    if(process.platform === "win32") {
+        const { spawn } = require('child_process');
+        let cmd = 'taskkill';
+        let args = ['/pid', processes[appName].childProcess.pid];
+
+        spawn(cmd, args, {
+            detached: true
+          });
+    } else {
+        processes[appName].childProcess.kill();
+    }
+
 }
 
 ipcMain.on('toggleApp', (_event, app_desc) => {

@@ -36,4 +36,3 @@ In order to utilize the SNES Control Panel, you will need to modify the `config.
 - The `usb2snes_address` key in the `snes_controller` group is only used by the controls natively supplied by the panel, such as reset and go to menu.
 - The blurb entry is there to add any quick notes that you may desire to be displayed on your panel at all times (for example a cheat sheet for hotkeys)
 - All applications are created as child apps of the panel, so when you close the panel, all the running apps will be killed
-    - SAVE YOUR SPLITS before closing the panel if you're launching livesplit from the panel - closing the panel will kill Livesplit without triggering the "would you like to save your splits" notification.
