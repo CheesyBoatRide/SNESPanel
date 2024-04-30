@@ -41,7 +41,7 @@ function loadSettings() {
         mainWindow.webContents.send("initBrowserWindowList", configData.webpages);
 
         for(const app_name of Object.values(configData.start.apps)) {
-            if(configData.apps[app_name] !== undefined & configData.apps[app_name].exists) {
+            if(configData.apps[app_name] !== undefined && configData.apps[app_name].exists !== undefined && configData.apps[app_name].exists) {
                 startProcess(configData.apps[app_name]);
             } else {
                 console.log("failed to find startup app " + app_name);

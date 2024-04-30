@@ -1,7 +1,7 @@
 {
   "name": "snes_panel",
   "productName": "SNES Control Panel",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "",
   "main": "main.js",
   "scripts": {

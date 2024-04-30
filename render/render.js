@@ -24,11 +24,13 @@ ipcRenderer.on('setSNESControllerNotesBlurb', (_event, blurb) => {
 
 function updateAppStatus(app, status) {
   let button = document.getElementById(app + "_button");
+  button.style.border = '0px solid #000'
   if (status === 'running') {
-      button.textContent = "Stop " + app;
+      button.textContent = app;
       button.style.backgroundColor = running_state;
-  } else if (status === 'stopped') {
-      button.textContent = "Start " + app;
+      button.style.border = '4px solid #000'
+    } else if (status === 'stopped') {
+      button.textContent = app;
       button.style.backgroundColor = button_color;
   } else if (status === 'error') {
     button.textContent = app + ' (Invalid)';
