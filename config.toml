@@ -28,6 +28,19 @@ cmd = 'E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe'
 display = 'Timer'
 args = ['-l', 'E:\Speedrunning\splits\timer.lsl', '-s', 'E:\Speedrunning\splits\timer.lss']
 
+[apps.Cube]
+cmd = 'E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe'
+display = 'Digital Cube Splits'
+args = ['-l', 'E:\Speedrunning\splits\Digital Cube.lsl', '-s', 'E:\Speedrunning\splits\Super Metroid Digital Cube.lss']
+
+[apps.ZFactor]
+cmd = 'E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe'
+display = 'Z-Factor Splits'
+args = ['-l', 'E:\Speedrunning\splits\zfactor_ssr.lsl', '-s', 'E:\Speedrunning\splits\Super Metroid - Z-Factor Any% SSR.lss']
+
+[apps.OBS]
+cmd = 'C:\Program Files\obs-studio\bin\64bit\obs64.exe'
+
 [webpages]
 Funtoon = 'https://funtoon.party/funtoon2snes/'
 'Subversion Tracker' = 'https://cout.github.io/sm_subversion_tracker/'
