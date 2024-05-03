@@ -58,3 +58,9 @@ Livesplit Hotkeys:
     F4 - Skip
     F5 - Start/Split
     '''
+
+[expanded_groups]
+'SNES Controls' = false
+'Custom Apps' = true
+Funtoon = false
+'Subversion Tracker' = false

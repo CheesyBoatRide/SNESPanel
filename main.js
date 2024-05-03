@@ -52,6 +52,8 @@ function loadSettings() {
 
         snesControls.init(mainWindow);
         snesControls.connect(configData.snes_controller.usb2snes_address);
+
+        mainWindow.webContents.send("applyCollapseSettings", configData.expanded_groups)
     });
 
 }
@@ -175,8 +177,9 @@ function startProcess(app_desc) {
 function killProcess(appName) {
     if(process.platform === "win32") {
         const { spawn } = require('child_process');
+
         let cmd = 'taskkill';
-        let args = ['/pid', processes[appName].childProcess.pid];
+        let args = ['/pid', processes[appName].childProcess.pid, '/t'];
 
         spawn(cmd, args, {
             detached: true
