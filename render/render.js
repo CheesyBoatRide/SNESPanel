@@ -69,6 +69,7 @@ ipcRenderer.on('initBrowserWindowList', (_event, pages) => {
     let button = document.createElement("button");
     button.className = 'collapsible active';
     button.textContent = name;
+    button.id = name;
     let section = document.createElement("section");
     section.className = 'content';
     let embed = document.createElement("EMBED");
