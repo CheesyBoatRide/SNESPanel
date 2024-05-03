@@ -1,8 +1,8 @@
 {
   "name": "snes_panel",
   "productName": "SNES Control Panel",
-  "version": "0.1.2",
-  "description": "",
+  "version": "0.1.3",
+  "description": "SNES Control Panel is a centralized user interface for managing various USB2SNES services, as well as a starting point for adding extra capabilities.",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
