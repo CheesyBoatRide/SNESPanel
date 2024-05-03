@@ -64,32 +64,6 @@ ipcRenderer.on('updateAppStatus', (_event, app, status) => {
 })
 
 
-function toggleGroup(e) {
-  e.classList.toggle("active");
-  const content = e.nextElementSibling;
-  content.classList.toggle('hide');
-}
-
-
-function collapseAll(e) {
-  const col = document.querySelectorAll('.collapsible');
-  const con = document.querySelectorAll('.content');
-
-  if (e.target.matches('.all')) {
-    this.classList.toggle("active");
-
-    col.forEach((button, index) => {
-      if (e.target.matches('.active')) {
-        button.classList.add('active');
-        con[index].classList.remove('hide');
-      } else {
-        button.classList.remove('active');
-        con[index].classList.add('hide');
-      }
-    });
-  }
-}
-
 ipcRenderer.on('initBrowserWindowList', (_event, pages) => {
   for (const [name, url] of Object.entries(pages)) {
     let button = document.createElement("button");
@@ -123,6 +97,33 @@ ipcRenderer.on('snesConnectionStatus', (_event, connected) => {
 
 ipcRenderer.on('applyCollapseSettings', (_event, settings) => {
 
+
+
+  function toggleGroup(e) {
+    this.classList.toggle("active");
+    const content = this.nextElementSibling;
+    content.classList.toggle('hide');
+  }
+
+
+  function collapseAll(e) {
+    const col = document.querySelectorAll('.collapsible');
+    const con = document.querySelectorAll('.content');
+
+    if (e.target.matches('.all')) {
+      this.classList.toggle("active");
+
+      col.forEach((button, index) => {
+        if (e.target.matches('.active')) {
+          button.classList.add('active');
+          con[index].classList.remove('hide');
+        } else {
+          button.classList.remove('active');
+          con[index].classList.add('hide');
+        }
+      });
+    }
+  }
   const col = document.querySelectorAll(".collapsible");
 
   for (let c of col) {
@@ -140,7 +141,9 @@ ipcRenderer.on('applyCollapseSettings', (_event, settings) => {
     console.log(group);
     if (group !== undefined) {
       if (!value) {
-        toggleGroup(group);
+        group.classList.toggle("active");
+        const content = group.nextElementSibling;
+        content.classList.toggle('hide');
       }
     }
   }
