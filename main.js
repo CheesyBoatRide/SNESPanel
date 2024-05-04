@@ -114,7 +114,7 @@ app.on('window-all-closed', () => {
     for (const proc of Object.values(processes)) {
         const { spawn } = require('child_process');
         let cmd = 'taskkill';
-        let args = ['/pid', proc.childProcess.pid];
+        let args = ['/pid', proc.pid];
 
         spawn(cmd, args, {
             detached: true
@@ -127,16 +127,18 @@ app.on('window-all-closed', () => {
 })
 
 function updateAppStatus(app_desc) {
-    if(app_desc.display in processes) {
-        if(processes[app_desc.display].childProcess.pid === undefined || processes[app_desc.display].childProcess.exitCode !== null) {
-            killProcess(app_desc.display);
+    if (app_desc.display in processes) {
+        for (child_process of processes[app_desc.display]) {
+            if (child_process.pid === undefined || child_process.exitCode !== null) {
+                killProcess(app_desc.display);
+            }
         }
     }
 
     let status = 'error';
-    if( app_desc.display in processes) {
+    if (app_desc.display in processes) {
         status = 'running';
-    } else if(app_desc.exists) {
+    } else if (app_desc.exists) {
         status = 'stopped';
     }
 
