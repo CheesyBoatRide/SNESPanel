@@ -1,2 +1,8 @@
 Hotkeys for SNES Controls
 Help dialog
+Full Installation Version
+Doesn't close all windows of EmoTracker
+UI for building layouts
+Super Metroid memory tinker (refill health/ammo, blue suit, items/bosses?)
+Info from current ROM displayed
+Multiple apps/actions for single button
