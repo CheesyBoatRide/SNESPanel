@@ -13,8 +13,8 @@ function resetSnesToMenu() {
   ipcRenderer.send("resetSnesToMenu");
 }
 
-function toggleDynamicApp(app_desc) {
-  ipcRenderer.send("toggleApp", app_desc);
+function toggleDynamicApp(appList, display) {
+  ipcRenderer.send("toggleApp", appList, display);
 }
 
 ipcRenderer.on('setSNESControllerNotesBlurb', (_event, blurb) => {
@@ -49,15 +49,16 @@ ipcRenderer.on('initAppList', (_event, apps) => {
     if (app_button === undefined || app_button === null) {
       app_button = document.createElement("button");
       drawer.appendChild(app_button);
+      app_button.id = value.display + "_button";
+      app_button.className = "appbutton";
+      app_button.apps = [];
+      app_button.appDisplay = value.display;
+      app_button.addEventListener("click", () => {
+        toggleDynamicApp(app_button.apps, app_button.appDisplay);
+      });
     }
-
-    app_button.id = value.display + "_button";
-    app_button.className = "appbutton";
-    app_button.addEventListener("click", () => {
-      toggleDynamicApp(value);
-    });
-
-    updateAppStatus(value.display, value.exists ? 'stopped' : 'error');
+    app_button.apps.push(value);
+    updateAppStatus(value.display, value.error === 'ok' ? 'stopped' : 'error');
   }
 })
 

@@ -7,41 +7,41 @@ let configData = null;
 let mainWindow = null;
 
 function loadSettings() {
-    
+
     mainWindow.webContents.send("snesConnectionStatus", false);
 
     var toml = require('toml');
 
     let configFile = './config.toml';
-    if(!fs.existsSync(configFile)) {
+    if (!fs.existsSync(configFile)) {
         configFile = path.join(process.env.PORTABLE_EXECUTABLE_DIR, 'config.toml');
     }
 
-    if(!fs.existsSync(configFile)) {
+    if (!fs.existsSync(configFile)) {
         alert("Unable to find config.toml file.  See ReadMe for help.");
         app.exit();
     }
 
     fs.readFile(configFile, 'utf8', (err, data) => {
         if (err) {
-          console.error(err);
-          return;
+            console.error(err);
+            return;
         }
         configData = toml.parse(data);
         console.log(configData);
 
         for (const app_name of Object.keys(configData.apps)) {
-            if(configData.apps[app_name].display === undefined) {
+            if (configData.apps[app_name].display === undefined) {
                 configData.apps[app_name].display = app_name;
             }
-            configData.apps[app_name].exists = fs.existsSync(configData.apps[app_name].cmd);
+            configData.apps[app_name].error = 'ok';
         }
 
         mainWindow.webContents.send("initAppList", configData.apps);
         mainWindow.webContents.send("initBrowserWindowList", configData.webpages);
 
-        for(const app_name of Object.values(configData.start.apps)) {
-            if(configData.apps[app_name] !== undefined && configData.apps[app_name].exists !== undefined && configData.apps[app_name].exists) {
+        for (const app_name of Object.values(configData.start.apps)) {
+            if (configData.apps[app_name] !== undefined) {
                 startProcess(configData.apps[app_name]);
             } else {
                 console.log("failed to find startup app " + app_name);
@@ -96,7 +96,7 @@ const menu = [
 app.whenReady().then(() => {
     const mainMenu = Menu.buildFromTemplate(menu);
     Menu.setApplicationMenu(mainMenu);
-    
+
     createMainWindow();
 
     app.on('activate', () => {
@@ -111,14 +111,10 @@ let processes = {};
 
 app.on('window-all-closed', () => {
 
-    for (const proc of Object.values(processes)) {
-        const { spawn } = require('child_process');
-        let cmd = 'taskkill';
-        let args = ['/pid', proc.pid];
-
-        spawn(cmd, args, {
-            detached: true
-          });
+    for (const procs of Object.values(processes)) {
+        for(childProcess of procs) {
+            killProcess(childProcess);
+        }
     }
 
     if (process.platform !== 'darwin') {
@@ -126,77 +122,102 @@ app.on('window-all-closed', () => {
     }
 })
 
-function updateAppStatus(app_desc) {
-    if (app_desc.display in processes) {
-        for (child_process of processes[app_desc.display]) {
+function updateAppStatus(appDesc) {
+    if (appDesc.display in processes) {
+        for (child_process of processes[appDesc.display]) {
             if (child_process.pid === undefined || child_process.exitCode !== null) {
-                killProcess(app_desc.display);
+                killProcess(child_process);
             }
         }
     }
 
+    console.log(appDesc);
+
     let status = 'error';
-    if (app_desc.display in processes) {
+    if (appDesc.display in processes) {
         status = 'running';
-    } else if (app_desc.exists) {
+    } else if (appDesc.error === 'ok') {
         status = 'stopped';
     }
 
-    mainWindow.webContents.send("updateAppStatus", app_desc.display, status)
+    mainWindow.webContents.send("updateAppStatus", appDesc.display, status)
 }
 
-function startProcess(app_desc) {
+function startProcess(appDesc) {
     const { spawn } = require('child_process');
 
-    let working_dir = app_desc.working_directory !== undefined ? app_desc.working_directory :
-        require('path').dirname(app_desc.cmd);
-    let env = app_desc.env !== undefined ? app_desc.env : "";
-    let args = app_desc.args !== undefined ? app_desc.args : [];
+    let working_dir = appDesc.working_directory !== undefined ? appDesc.working_directory :
+        require('path').dirname(appDesc.cmd);
+    let env = appDesc.env !== undefined ? appDesc.env : "";
+    let args = appDesc.args !== undefined ? appDesc.args : [];
 
-    console.log(app_desc.cmd);
+    console.log(appDesc.cmd);
     console.log(args);
 
-    let child_process = spawn(app_desc.cmd, args, {
-        cwd: working_dir,
-        env: {...env, ...process.env},
-        stdio: 'inherit',
-        detached: true
-      });
-    child_process.on('exit', () => {
-        delete processes[app_desc.display];
-        updateAppStatus(app_desc);
-    });
+    try {
 
-    let entry = {
-        childProcess: child_process
-    };
+        let child_process = spawn(appDesc.cmd, args, {
+            cwd: working_dir,
+            env: { ...env, ...process.env },
+            stdio: 'inherit',
+            detached: true
+        });
+        child_process.on('exit', () => {
+            if (processes[appDesc.display] !== undefined) {
+                let index = processes[appDesc.display].indexOf(child_process);
+                if (index > -1) {
+                    processes[appDesc.display].splice(index, 1);
+                }
+                if (processes[appDesc.display].length == 0) {
+                    delete processes[appDesc.display];
+                }
+            }
+            updateAppStatus(appDesc);
+        });
 
-    processes[app_desc.display] = entry;
+        if (processes[appDesc.display] === undefined) {
+            processes[appDesc.display] = [];
+        }
+        processes[appDesc.display].push(child_process);
 
-    updateAppStatus(app_desc);
+    } catch {
+        appDesc.error = 'error';
+    }
+
+    updateAppStatus(appDesc);
 }
 
-function killProcess(appName) {
-    if(process.platform === "win32") {
+function killProcessGroup(groupName) {
+    if (groupName in processes) {
+        for (child_process of processes[groupName]) {
+            killProcess(child_process);
+        }
+    }
+}
+
+function killProcess(child_process) {
+    if (process.platform === "win32") {
         const { spawn } = require('child_process');
 
         let cmd = 'taskkill';
-        let args = ['/pid', processes[appName].childProcess.pid, '/t'];
+        let args = ['/pid', child_process.pid, '/t'];
 
         spawn(cmd, args, {
             detached: true
-          });
+        });
     } else {
-        processes[appName].childProcess.kill();
+        child_process.kill();
     }
 
 }
 
-ipcMain.on('toggleApp', (_event, app_desc) => {
-    if(processes[app_desc.display] === undefined) {
-        startProcess(app_desc);
+ipcMain.on('toggleApp', (_event, appList, display) => {
+    if (processes[display] === undefined) {
+        for(appDesc of appList) {
+            startProcess(appDesc);
+        }
     } else {
-        killProcess(app_desc.display);
+        killProcessGroup(display);
     }
 })
 
