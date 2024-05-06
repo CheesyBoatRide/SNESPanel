@@ -112,7 +112,7 @@ let processes = {};
 app.on('window-all-closed', () => {
 
     for (const procs of Object.values(processes)) {
-        for(childProcess of procs) {
+        for (childProcess of procs) {
             killProcess(childProcess);
         }
     }
@@ -124,9 +124,9 @@ app.on('window-all-closed', () => {
 
 function updateAppStatus(appDesc) {
     if (appDesc.display in processes) {
-        for (child_process of processes[appDesc.display]) {
-            if (child_process.pid === undefined || child_process.exitCode !== null) {
-                killProcess(child_process);
+        for (childProcess of processes[appDesc.display]) {
+            if (childProcess.pid === undefined || childProcess.exitCode !== null) {
+                killProcess(childProcess);
             }
         }
     }
@@ -134,13 +134,27 @@ function updateAppStatus(appDesc) {
     console.log(appDesc);
 
     let status = 'error';
-    if (appDesc.display in processes) {
-        status = 'running';
-    } else if (appDesc.error === 'ok') {
-        status = 'stopped';
+    if(appDesc.error === 'ok') {
+        if (appDesc.display in processes) {
+            status = 'running';
+        } else if (appDesc.error === 'ok') {
+            status = 'stopped';
+        }
     }
 
     mainWindow.webContents.send("updateAppStatus", appDesc.display, status)
+}
+
+function untrackProcess(childProcess) {
+    if (processes[appDesc.display] !== undefined) {
+        let index = processes[appDesc.display].indexOf(childProcess);
+        if (index > -1) {
+            processes[appDesc.display].splice(index, 1);
+        }
+        if (processes[appDesc.display].length == 0) {
+            delete processes[appDesc.display];
+        }
+    }
 }
 
 function startProcess(appDesc) {
@@ -151,36 +165,38 @@ function startProcess(appDesc) {
     let env = appDesc.env !== undefined ? appDesc.env : "";
     let args = appDesc.args !== undefined ? appDesc.args : [];
 
-    console.log(appDesc.cmd);
-    console.log(args);
+    let childProcess = {};
 
     try {
 
-        let child_process = spawn(appDesc.cmd, args, {
+        childProcess = spawn(appDesc.cmd, args, {
             cwd: working_dir,
             env: { ...env, ...process.env },
             stdio: 'inherit',
             detached: true
         });
-        child_process.on('exit', () => {
-            if (processes[appDesc.display] !== undefined) {
-                let index = processes[appDesc.display].indexOf(child_process);
-                if (index > -1) {
-                    processes[appDesc.display].splice(index, 1);
-                }
-                if (processes[appDesc.display].length == 0) {
-                    delete processes[appDesc.display];
-                }
+        childProcess.on('error', (err) => {
+            if (childProcess !== undefined) {
+                childProcess.kill();
             }
+            appDesc.error = 'error';
+            killProcessGroup(appDesc.display);
+            updateAppStatus(appDesc);
+        });
+        childProcess.on('exit', () => {
+            untrackProcess(childProcess);
             updateAppStatus(appDesc);
         });
 
         if (processes[appDesc.display] === undefined) {
             processes[appDesc.display] = [];
         }
-        processes[appDesc.display].push(child_process);
+        processes[appDesc.display].push(childProcess);
 
     } catch {
+        if (childProcess !== undefined) {
+            childProcess.kill();
+        }
         appDesc.error = 'error';
     }
 
@@ -189,31 +205,31 @@ function startProcess(appDesc) {
 
 function killProcessGroup(groupName) {
     if (groupName in processes) {
-        for (child_process of processes[groupName]) {
-            killProcess(child_process);
+        for (childProcess of processes[groupName]) {
+            killProcess(childProcess);
         }
     }
 }
 
-function killProcess(child_process) {
+function killProcess(childProcess) {
     if (process.platform === "win32") {
         const { spawn } = require('child_process');
 
         let cmd = 'taskkill';
-        let args = ['/pid', child_process.pid, '/t'];
+        let args = ['/pid', childProcess.pid, '/t'];
 
         spawn(cmd, args, {
             detached: true
         });
     } else {
-        child_process.kill();
+        childProcess.kill();
     }
 
 }
 
 ipcMain.on('toggleApp', (_event, appList, display) => {
     if (processes[display] === undefined) {
-        for(appDesc of appList) {
+        for (appDesc of appList) {
             startProcess(appDesc);
         }
     } else {

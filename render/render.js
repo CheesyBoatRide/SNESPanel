@@ -25,6 +25,11 @@ ipcRenderer.on('setSNESControllerNotesBlurb', (_event, blurb) => {
 function updateAppStatus(app, status) {
   let button = document.getElementById(app + "_button");
   button.style.border = '0px solid #000'
+
+  if(button.appStatus !== 'ok') {
+    status = 'error';
+  }
+
   if (status === 'running') {
     button.textContent = app;
     button.style.backgroundColor = running_state;
@@ -36,6 +41,7 @@ function updateAppStatus(app, status) {
     button.textContent = app + ' (Invalid)';
     button.style.backgroundColor = error_state;
     button.disabled = true;
+    button.appStatus = 'error';
   } else {
     // error
     console.log("Invalid app status");
@@ -53,6 +59,7 @@ ipcRenderer.on('initAppList', (_event, apps) => {
       app_button.className = "appbutton";
       app_button.apps = [];
       app_button.appDisplay = value.display;
+      app_button.appStatus = 'ok';
       app_button.addEventListener("click", () => {
         toggleDynamicApp(app_button.apps, app_button.appDisplay);
       });
