@@ -13,8 +13,8 @@ function resetSnesToMenu() {
   ipcRenderer.send("resetSnesToMenu");
 }
 
-function toggleDynamicApp(app_desc) {
-  ipcRenderer.send("toggleApp", app_desc);
+function toggleDynamicApp(appList, display) {
+  ipcRenderer.send("toggleApp", appList, display);
 }
 
 ipcRenderer.on('setSNESControllerNotesBlurb', (_event, blurb) => {
@@ -25,6 +25,11 @@ ipcRenderer.on('setSNESControllerNotesBlurb', (_event, blurb) => {
 function updateAppStatus(app, status) {
   let button = document.getElementById(app + "_button");
   button.style.border = '0px solid #000'
+
+  if(button.appStatus !== 'ok') {
+    status = 'error';
+  }
+
   if (status === 'running') {
     button.textContent = app;
     button.style.backgroundColor = running_state;
@@ -36,6 +41,7 @@ function updateAppStatus(app, status) {
     button.textContent = app + ' (Invalid)';
     button.style.backgroundColor = error_state;
     button.disabled = true;
+    button.appStatus = 'error';
   } else {
     // error
     console.log("Invalid app status");
@@ -44,18 +50,22 @@ function updateAppStatus(app, status) {
 
 ipcRenderer.on('initAppList', (_event, apps) => {
   for (const [key, value] of Object.entries(apps)) {
-    let app_button = document.createElement("button");
-    app_button.id = value.display + "_button";
-    app_button.className = "appbutton";
-    app_button.addEventListener("click", () => {
-      toggleDynamicApp(value);
-    });
-
     let drawer = document.getElementById("customAppDrawer");
-
-    drawer.appendChild(app_button);
-
-    updateAppStatus(value.display, value.exists ? 'stopped' : 'error');
+    let app_button = document.getElementById(value.display + "_button");
+    if (app_button === undefined || app_button === null) {
+      app_button = document.createElement("button");
+      drawer.appendChild(app_button);
+      app_button.id = value.display + "_button";
+      app_button.className = "appbutton";
+      app_button.apps = [];
+      app_button.appDisplay = value.display;
+      app_button.appStatus = 'ok';
+      app_button.addEventListener("click", () => {
+        toggleDynamicApp(app_button.apps, app_button.appDisplay);
+      });
+    }
+    app_button.apps.push(value);
+    updateAppStatus(value.display, value.error === 'ok' ? 'stopped' : 'error');
   }
 })
 

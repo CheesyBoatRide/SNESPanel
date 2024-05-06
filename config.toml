@@ -1,3 +1,6 @@
+
+###########################################################################################
+
 [apps.SNI]
 cmd = 'E:\Speedrunning\sni-v0.0.96-windows-amd64\sni.exe'
 working_directory='E:\Speedrunning\sni-v0.0.96-windows-amd64'
@@ -41,12 +44,18 @@ args = ['-l', 'E:\Speedrunning\splits\zfactor_ssr.lsl', '-s', 'E:\Speedrunning\s
 [apps.OBS]
 cmd = 'C:\Program Files\obs-studio\bin\64bit\obs64.exe'
 
+###########################################################################################
+
 [webpages]
 Funtoon = 'https://funtoon.party/funtoon2snes/'
 'Subversion Tracker' = 'https://cout.github.io/sm_subversion_tracker/'
 
+###########################################################################################
+
 [start]
 apps = ['SNI']
+
+###########################################################################################
 
 [snes_controller]
 usb2snes_address = 'ws://localhost:23074/'
@@ -58,6 +67,8 @@ Livesplit Hotkeys:
     F4 - Skip
     F5 - Start/Split
     '''
+
+###########################################################################################
 
 [expanded_groups]
 'SNES Controls' = false
