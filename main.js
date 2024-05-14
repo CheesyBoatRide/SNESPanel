@@ -145,14 +145,14 @@ function updateAppStatus(appDesc) {
     mainWindow.webContents.send("updateAppStatus", appDesc.display, status)
 }
 
-function untrackProcess(childProcess) {
-    if (processes[appDesc.display] !== undefined) {
-        let index = processes[appDesc.display].indexOf(childProcess);
+function untrackProcess(display, childProcess) {
+    if (processes[display] !== undefined) {
+        let index = processes[display].indexOf(childProcess);
         if (index > -1) {
-            processes[appDesc.display].splice(index, 1);
+            processes[display].splice(index, 1);
         }
-        if (processes[appDesc.display].length == 0) {
-            delete processes[appDesc.display];
+        if (processes[display].length == 0) {
+            delete processes[display];
         }
     }
 }
@@ -184,7 +184,7 @@ function startProcess(appDesc) {
             updateAppStatus(appDesc);
         });
         childProcess.on('exit', () => {
-            untrackProcess(childProcess);
+            untrackProcess(appDesc.display, childProcess);
             updateAppStatus(appDesc);
         });
 
@@ -207,6 +207,7 @@ function killProcessGroup(groupName) {
     if (groupName in processes) {
         for (childProcess of processes[groupName]) {
             killProcess(childProcess);
+            untrackProcess(appDesc.display, childProcess);
         }
     }
 }
