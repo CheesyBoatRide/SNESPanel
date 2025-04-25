@@ -1,12 +1,15 @@
-const { app, BrowserWindow, Menu, ipcMain } = require('electron')
+const { app, BrowserWindow, Menu, ipcMain } = require('electron/main')
 const path = require('node:path')
 
 const fs = require('node:fs');
 
 let configData = null;
 let mainWindow = null;
+let execPath;
 
 function loadSettings() {
+
+    execPath = app.getAppPath();
 
     mainWindow.webContents.send("snesConnectionStatus", false);
 
@@ -14,7 +17,7 @@ function loadSettings() {
 
     let configFile = './config.toml';
     if (!fs.existsSync(configFile)) {
-        configFile = path.join(process.env.PORTABLE_EXECUTABLE_DIR, 'config.toml');
+        configFile = path.join(execPath, 'config.toml');
     }
 
     if (!fs.existsSync(configFile)) {
@@ -160,8 +163,30 @@ function untrackProcess(display, childProcess) {
 function startProcess(appDesc) {
     const { spawn } = require('child_process');
 
-    let working_dir = appDesc.working_directory !== undefined ? appDesc.working_directory :
-        require('path').dirname(appDesc.cmd);
+    let cmd = appDesc.cmd;
+    let working_dir = appDesc.working_directory 
+
+    if (!fs.existsSync(cmd)) {
+        if(working_dir !== undefined) {
+            if (!fs.existsSync(working_dir)) {
+                working_dir = path.join(execPath, working_dir);
+            }
+            cmd = path.join(working_dir, cmd);
+        } else {
+            cmd = path.join(execPath, cmd);
+        }
+    }
+
+    if(working_dir === undefined) {
+        working_dir = path.dirname(cmd);
+    }
+
+    cmd = fs.realpathSync(cmd);
+    working_dir = fs.realpathSync(working_dir);
+
+    console.log("Command: %s", cmd);
+    console.log("Working Directory: %s", working_dir);
+ 
     let env = appDesc.env !== undefined ? appDesc.env : "";
     let args = appDesc.args !== undefined ? appDesc.args : [];
 
@@ -169,7 +194,7 @@ function startProcess(appDesc) {
 
     try {
 
-        childProcess = spawn(appDesc.cmd, args, {
+        childProcess = spawn(cmd, args, {
             cwd: working_dir,
             env: { ...env, ...process.env },
             stdio: 'inherit',
@@ -179,6 +204,9 @@ function startProcess(appDesc) {
             if (childProcess !== undefined) {
                 childProcess.kill();
             }
+
+            console.log("Process %s failed", cmd);
+
             appDesc.error = 'error';
             killProcessGroup(appDesc.display);
             updateAppStatus(appDesc);
@@ -192,12 +220,13 @@ function startProcess(appDesc) {
             processes[appDesc.display] = [];
         }
         processes[appDesc.display].push(childProcess);
-
+        console.log("Successfully ran cmd %s", cmd);
     } catch {
         if (childProcess !== undefined) {
             childProcess.kill();
         }
         appDesc.error = 'error';
+        console.log("Caught an exception running %s", cmd);
     }
 
     updateAppStatus(appDesc);
@@ -207,7 +236,7 @@ function killProcessGroup(groupName) {
     if (groupName in processes) {
         for (childProcess of processes[groupName]) {
             killProcess(childProcess);
-            untrackProcess(appDesc.display, childProcess);
+            untrackProcess(groupName, childProcess);
         }
     }
 }

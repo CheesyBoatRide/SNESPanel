@@ -1,4 +1,4 @@
-npm run dist
+yarn dist
 New-Item -Path . -Name \bin\stage -ItemType "directory"  -Force
 New-Item -Path . -Name .\bin\package -ItemType "directory"  -Force
 Copy-Item -Path .\dist\*.exe -Destination .\bin\stage -Force

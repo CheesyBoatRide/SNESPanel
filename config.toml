@@ -2,47 +2,36 @@
 ###########################################################################################
 
 [apps.SNI]
-cmd = 'E:\Speedrunning\sni-v0.0.96-windows-amd64\sni.exe'
-working_directory='E:\Speedrunning\sni-v0.0.96-windows-amd64'
+cmd = '.\sni.exe'
+working_directory='.\sni-v0.0.96-windows-amd64'
 args=[]
 env = {SNI_USB2SNES_LISTEN_ADDRS='0.0.0.0:23074,0.0.0.0:8080'}
 display='SNI'
 
 [apps.FileViewer]
-cmd = 'E:\Speedrunning\sni-v0.0.96-windows-amd64\manage_files.exe'
+cmd = '.\sni-v0.0.96-windows-amd64\manage_files.exe'
 display = 'File Explorer'
 
 [apps.InputViewer]
-cmd = 'E:\Speedrunning\sni-v0.0.96-windows-amd64\InputDisplay\snes_input_display-windows-amd64.exe'
+cmd = '.\sni-v0.0.96-windows-amd64\InputDisplay\snes_input_display-windows-amd64.exe'
+display = 'Metroid Inputs'
+args=['settings_sm.toml']
+
+[apps.InputViewerSMW]
+cmd = '.\sni-v0.0.96-windows-amd64\InputDisplay\snes_input_display-windows-amd64.exe'
+display = 'SMW Inputs'
+args=['settings_smw.toml']
 
 [apps.Tracker]
-cmd = 'C:\Program Files (x86)\EmoTracker\EmoTracker.exe'
+cmd = '.\EmoTracker\EmoTracker.exe'
 
 [apps.SMTileViewer]
-cmd = 'E:\Speedrunning\sni-v0.0.96-windows-amd64\SMTileViewer\SMTileViewer.exe'
+cmd = '.\sni-v0.0.96-windows-amd64\SMTileViewer\SMTileViewer.exe'
+display = 'SM Tile Viewer'
 
 [apps.LiveSplit]
-cmd = 'E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe'
-display = 'PRKD Splits'
-args = ['-l', 'E:\Speedrunning\splits\PRKD.lsl', '-s', 'E:\Speedrunning\splits\Super Metroid - Any% (PRKD, NTSC, SNES).lss']
-
-[apps.Timer]
-cmd = 'E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe'
-display = 'Timer'
-args = ['-l', 'E:\Speedrunning\splits\timer.lsl', '-s', 'E:\Speedrunning\splits\timer.lss']
-
-[apps.Cube]
-cmd = 'E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe'
-display = 'Digital Cube Splits'
-args = ['-l', 'E:\Speedrunning\splits\Digital Cube.lsl', '-s', 'E:\Speedrunning\splits\Super Metroid Digital Cube.lss']
-
-[apps.ZFactor]
-cmd = 'E:\Speedrunning\LiveSplit_1.8.21\LiveSplit.exe'
-display = 'Z-Factor Splits'
-args = ['-l', 'E:\Speedrunning\splits\zfactor_ssr.lsl', '-s', 'E:\Speedrunning\splits\Super Metroid - Z-Factor Any% SSR.lss']
-
-[apps.OBS]
-cmd = 'C:\Program Files\obs-studio\bin\64bit\obs64.exe'
+cmd = '.\LiveSplit_1.8.21\LiveSplit.exe'
+display = 'Live Split'
 
 ###########################################################################################
 
@@ -53,25 +42,20 @@ Funtoon = 'https://funtoon.party/funtoon2snes/'
 ###########################################################################################
 
 [start]
-apps = ['SNI']
+apps = []
 
 ###########################################################################################
 
 [snes_controller]
 usb2snes_address = 'ws://localhost:23074/'
 notes_blurb = '''
-Livesplit Hotkeys:
-    F1 - Reset
-    F2 - Undo
-    F3 - Pause
-    F4 - Skip
-    F5 - Start/Split
+    Notes Here...
     '''
 
 ###########################################################################################
 
 [expanded_groups]
-'SNES Controls' = false
+'SNES Controls' = true
 'Custom Apps' = true
 Funtoon = false
 'Subversion Tracker' = false

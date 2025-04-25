@@ -133,3 +133,6 @@ dist
 # added
 package-lock.json
 bin/
+sni-v0.0.96-windows-amd64/
+EmoTracker/
+LiveSplit_1.8.21/
