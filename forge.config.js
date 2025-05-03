@@ -1,34 +1,36 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 const path = require('node:path')
+const fs = require('node:fs');
+
 module.exports = {
   packagerConfig: {
     asar: true,
     icon: path.resolve(__dirname, 'docs/icon.ico'),
     extraResource: [
-      path.resolve(__dirname, 'docs/icon.ico')
+      path.resolve(__dirname, 'docs/icon.ico'),
+    ],
+    afterExtract:[
+      async (buildPath, electronVersion, platform, arch, callback) => {
+        fs.copyFileSync(path.resolve(__dirname, 'config.toml'), path.join(buildPath, 'config.toml'));
+        fs.copyFileSync(path.resolve(__dirname, 'README.md'), path.join(buildPath, 'README.md'));
+        fs.copyFileSync(path.resolve(__dirname, 'screenshot.png'), path.join(buildPath, 'screenshot.png'));
+        fs.copyFileSync(path.resolve(__dirname, 'LICENSE'), path.join(buildPath, 'LICENSE'));
+
+        // Call the callback when done
+        callback();
+      }
     ]
   },
   rebuildConfig: {},
+  outDir: 'bin',
   makers: [
     {
-      name: '@electron-forge/maker-squirrel',
+      name: '@electron-forge/maker-zip',
       config: {
         icon: path.resolve(__dirname, 'docs/icon.ico')
-      },
-    },
-    {
-      name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
-    },
-    {
-      name: '@electron-forge/maker-deb',
-      config: {},
-    },
-    {
-      name: '@electron-forge/maker-rpm',
-      config: {},
-    },
+      }
+    }
   ],
   plugins: [
     {

@@ -5,6 +5,8 @@ var running_state = '#007243';
 
 const ipcRenderer = require('electron').ipcRenderer;
 
+document.onkeydown = () => false; // no keyboard presses right now
+
 function resetSnes() {
   ipcRenderer.send("resetSnes");
 }
