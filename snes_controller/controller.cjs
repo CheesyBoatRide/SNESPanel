@@ -9,10 +9,26 @@ var lastRequest = "";
 
 var snesAddress = "";
 
-var mainWindow = undefined;
+var windows = [];
 
-function init(window) {
-    mainWindow = window;
+var connected = false;
+
+function addWindow(window) {
+    windows.push(window);
+}
+
+function removeWindow(window) {
+    const index = windows.indexOf(window);
+    if (index > -1) {
+        windows.splice(index, 1);
+    }
+}
+
+function updateConnectionStatus() {
+    for (let i = 0; i < windows.length; i++) {
+        windows[i].webContents.send("snesConnectionStatus", connected);
+    }
+    setTimeout(function () { updateConnectionStatus(); }, 1000);
 }
 
 client.on('connectFailed', function (error) {
@@ -21,6 +37,10 @@ client.on('connectFailed', function (error) {
 });
 
 function recievedDeviceList(msg) {
+    if(connected) {
+        return;
+    }
+
     let Results = msg.Results;
     if (Results === undefined || Results.length == 0) {
         reconnect();
@@ -35,21 +55,26 @@ function recievedDeviceList(msg) {
             lastRequest = "Attach";
             console.log(JSON.stringify(attach_to_device));
             wsConnection.send(JSON.stringify(attach_to_device));
-
-            mainWindow.webContents.send("snesConnectionStatus", true);
+            connected = true;
         }
     }
 }
 
+function recievedAddress(msg) {
+    for (let i = 0; i < windows.length; i++) {
+        windows[i].webContents.send("receiveSnesAddress", msg);
+    }
+}
+
 function decodeMsg(msg) {
-    if (lastRequest == "DeviceList") {
+    if (lastRequest === "DeviceList") {
         recievedDeviceList(msg)
     }
     lastRequest = "";
 }
 
 function reconnect() {
-    mainWindow.webContents.send("snesConnectionStatus", false);
+    connected = false;
     setTimeout(function () { snesConnect(snesAddress); }, 1000);
 }
 
@@ -64,8 +89,8 @@ client.on('connect', function (connection) {
         reconnect();
     });
 
-    connection.on('close', function () {
-        console.log('echo-protocol Connection Closed');
+    connection.on('close', function (code, reason) {
+        console.log('ws is closed with code: ' + code + ' reason: ' + reason);
         reconnect();
     });
 
@@ -73,6 +98,12 @@ client.on('connect', function (connection) {
         if (message.type === 'utf8') {
             console.log("Received: '" + message.utf8Data + "'");
             decodeMsg(JSON.parse(message.utf8Data));
+        } else {
+            // memory data
+            //console.log("Received: '" + message.binaryData + "'");
+            if(lastRequest === "GetAddress") {
+                recievedAddress(message.binaryData)
+            }
         }
     });
 
@@ -90,6 +121,7 @@ client.on('connect', function (connection) {
 function snesConnect(address) {
     snesAddress = address;
     client.connect(address);
+    updateConnectionStatus();
 }
 
 function snesReset() {
@@ -110,9 +142,22 @@ function snesResetToMenu() {
     wsConnection.send(JSON.stringify(request));
 }
 
+function snesRequestMemoryValue(address, offset) {
+    let request = {
+        Opcode: "GetAddress",
+        Space: "SNES",
+        Operands: [address, JSON.stringify(offset)]
+    };
+    lastRequest = "GetAddress";
+    //console.log(JSON.stringify(request));
+    wsConnection.send(JSON.stringify(request));
+}
+
 module.exports = {
-    init: init,
+    addWindow: addWindow,
+    removeWindow: removeWindow,
     connect: snesConnect,
     reset: snesReset,
-    resetToMenu: snesResetToMenu
+    resetToMenu: snesResetToMenu,
+    requestMemoryValue: snesRequestMemoryValue
 }

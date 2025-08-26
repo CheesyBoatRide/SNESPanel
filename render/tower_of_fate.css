@@ -1,0 +1,10 @@
+:root {
+    --background_color : #000000;
+    --text_color : #FFFFFF;
+}
+
+body {
+    font: 900 16px/1.5 Courier New ;
+    background-color: var(--background_color);
+    color: var(--text_color);
+}

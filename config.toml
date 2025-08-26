@@ -33,6 +33,10 @@ display = 'SM Tile Viewer'
 cmd = '.\LiveSplit_1.8.21\LiveSplit.exe'
 display = 'Live Split'
 
+[apps.TowerOfFate]
+html = '.\render\tower_of_fate.html'
+display = 'Tower Of Fate'
+
 ###########################################################################################
 
 [webpages]

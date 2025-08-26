@@ -3,6 +3,8 @@ const path = require('node:path')
 
 const fs = require('node:fs');
 
+const snesControls = require('./snes_controller/controller.cjs')
+
 let configData = null;
 let mainWindow = null;
 let execPath;
@@ -53,7 +55,7 @@ function loadSettings() {
 
         mainWindow.webContents.send("setSNESControllerNotesBlurb", configData.snes_controller.notes_blurb);
 
-        snesControls.init(mainWindow);
+        snesControls.addWindow(mainWindow);
         snesControls.connect(configData.snes_controller.usb2snes_address);
 
         mainWindow.webContents.send("applyCollapseSettings", configData.expanded_groups)
@@ -111,6 +113,7 @@ app.whenReady().then(() => {
 })
 
 let processes = {};
+let subWindows = {};
 
 app.on('window-all-closed', () => {
 
@@ -138,7 +141,7 @@ function updateAppStatus(appDesc) {
 
     let status = 'error';
     if(appDesc.error === 'ok') {
-        if (appDesc.display in processes) {
+        if (appDesc.display in processes || appDesc.display in subWindows) {
             status = 'running';
         } else if (appDesc.error === 'ok') {
             status = 'stopped';
@@ -160,7 +163,54 @@ function untrackProcess(display, childProcess) {
     }
 }
 
+function untrackWindow(display, childWindow) {
+    if (subWindows[display] !== undefined) {
+        let index = subWindows[display].indexOf(childWindow);
+        if (index > -1) {
+            subWindows[display].splice(index, 1);
+        }
+        if (subWindows[display].length == 0) {
+            delete subWindows[display];
+        }
+    }
+    snesControls.removeWindow(childWindow);
+}
+
+function loadSubWindow(appDesc) {
+    let window = new BrowserWindow({
+        title: appDesc.display,
+        width: 300,
+        height: 250,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+
+    window.loadFile(appDesc.html);
+    window.setMenu(null)
+    snesControls.addWindow(window);
+
+    if (subWindows[appDesc.display] === undefined) {
+        subWindows[appDesc.display] = [];
+    }
+
+    window.on('close', () => {
+        untrackWindow(appDesc.display, window);
+        updateAppStatus(appDesc);
+    });
+
+    subWindows[appDesc.display].push(window);
+}
+
 function startProcess(appDesc) {
+
+    if(appDesc.html !== undefined) {
+        loadSubWindow(appDesc);
+        updateAppStatus(appDesc);
+        return;
+    }
+
     const { spawn } = require('child_process');
 
     let cmd = appDesc.cmd;
@@ -239,6 +289,12 @@ function killProcessGroup(groupName) {
             untrackProcess(groupName, childProcess);
         }
     }
+    if(groupName in subWindows) {
+        for (window of subWindows[groupName]) {
+            window.close();
+            untrackWindow(groupName, window);
+        }
+    }
 }
 
 function killProcess(childProcess) {
@@ -258,7 +314,7 @@ function killProcess(childProcess) {
 }
 
 ipcMain.on('toggleApp', (_event, appList, display) => {
-    if (processes[display] === undefined) {
+    if (processes[display] === undefined && subWindows[display] === undefined) {
         for (appDesc of appList) {
             startProcess(appDesc);
         }
@@ -267,12 +323,14 @@ ipcMain.on('toggleApp', (_event, appList, display) => {
     }
 })
 
-const snesControls = require('./snes_controller/controller.cjs')
-
 ipcMain.on('resetSnes', (_event) => {
     snesControls.reset();
 });
 
 ipcMain.on('resetSnesToMenu', (_event) => {
     snesControls.resetToMenu();
+});
+
+ipcMain.on('snesGetAddress', (_event, address, offset) => {
+    snesControls.requestMemoryValue(address, offset);
 });
