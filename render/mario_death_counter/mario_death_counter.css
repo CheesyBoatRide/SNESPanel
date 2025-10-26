@@ -1,0 +1,16 @@
+
+:root {
+    --background_color : #0063bd;
+    --text_color : #ffce29;
+}
+
+body {
+    font: 900 32px/1.5 Arial ;
+    background-color: var(--background_color);
+    color: var(--text_color);
+    text-shadow:
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black; /* Creates a 1px black outline */
+}

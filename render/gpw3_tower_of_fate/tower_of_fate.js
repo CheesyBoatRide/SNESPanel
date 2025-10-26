@@ -9,6 +9,8 @@ var current_room_digit_two = 0;
 
 var snes_connected = false;
 var room_pb = 0;
+var last_current_count = 0;
+var last_ten_rooms = [];
 
 const ipcRenderer = require('electron').ipcRenderer;
 
@@ -42,6 +44,21 @@ ipcRenderer.on('receiveSnesAddress', (_event, msg) => {
     if(current_count > 81) {
         current_count = 0;
     }
+
+    if(last_current_count !== current_count && last_current_count !== 0 && current_count === 1) {
+        last_ten_rooms.push(last_current_count-1);
+        if(last_ten_rooms.length > 10) {
+            last_ten_rooms.shift();
+        }
+        let room_avg = 0;
+        for(let i = 0; i < last_ten_rooms.length; ++i) {
+            room_avg += last_ten_rooms[i];
+        }
+        room_avg = room_avg / last_ten_rooms.length;
+        let avg_text = document.getElementById("avg_text");
+        avg_text.textContent = "Avg (Last " + last_ten_rooms.length + " Runs): " + room_avg.toFixed(2);
+    }
+    last_current_count = current_count;
 
     let text = document.getElementById("current_text");
     text.textContent = "Current Room: " + current_count;

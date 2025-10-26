@@ -79,6 +79,12 @@ function createMainWindow() {
     mainWindow.webContents.on('did-finish-load', function () {
         loadSettings();
     });
+
+    mainWindow.on('close', () => {
+        snesControls.removeWindow(mainWindow);
+        app.quit();
+    });
+
 }
 
 // Menu template
@@ -187,7 +193,13 @@ function loadSubWindow(appDesc) {
         }
     });
 
-    window.loadFile(appDesc.html);
+    let html = appDesc.html;
+    if (!fs.existsSync(html)) {
+        html = path.join(execPath, html);
+    }
+    html = fs.realpathSync(html);
+
+    window.loadFile(html);
     window.setMenu(null)
     snesControls.addWindow(window);
 
