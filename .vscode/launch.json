@@ -1,0 +1,15 @@
+    {
+      "version": "0.2.0",
+      "configurations": [
+        {
+          "type": "pwa-node",
+          "request": "launch",
+          "name": "Electron Main",
+          "skipFiles": ["<node_internals>/**"],
+          "program": "${workspaceFolder}/dist/main.js", // Or your main entry file
+          "runtimeExecutable": "npm",
+          "runtimeArgs": ["start"], // Or your command to run Electron
+          "console": "integratedTerminal"
+        }
+      ]
+    }

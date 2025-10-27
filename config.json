@@ -1,0 +1,54 @@
+{
+    "apps": [
+        {
+            "name": "SNI",
+            "args": [],
+            "cmd": "./sni.exe",
+            "working_directory": "E:/Speedrunning/sni-v0.0.96-windows-amd64",
+            "env": {
+                "SNI_USB2SNES_LISTEN_ADDRS": "0.0.0.0:23074,0.0.0.0:8080"
+            }
+        },
+        {
+            "name": "File Explorer",
+            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/manage_files.exe"
+        },
+        {
+            "name": "Input Viewer",
+            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/InputDisplay/snes_input_display-windows-amd64.exe",
+            "args": [
+                "settings_sm.toml"
+            ]
+        },
+        {
+            "name": "Input Viewer SMW",
+            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/InputDisplay/snes_input_display-windows-amd64.exe",
+            "args": [
+                "settings_smw.toml"
+            ]
+        },
+        {
+            "name": "TowerOfFate",
+            "display": "Tower Of Fate",
+            "html": "./src/applets/gpw3_tower_of_fate/tower_of_fate.html"
+        },
+        {
+            "name": "Tracker",
+            "cmd": "E:/Speedrunning/EmoTracker/EmoTracker.exe"
+        }
+    ],
+    "expanded_groups": {
+        "Custom Apps": true,
+        "Funtoon": false,
+        "SNES Controls": true,
+        "Subversion Tracker": false
+    },
+    "start_apps": [],
+    "usb2snes": {
+        "usb2snes_address": "ws://localhost:23074/"
+    },
+    "webpages": {
+        "Funtoon": "https://funtoon.party/funtoon2snes/",
+        "Subversion Tracker": "https://cout.github.io/sm_subversion_tracker/"
+    }
+}

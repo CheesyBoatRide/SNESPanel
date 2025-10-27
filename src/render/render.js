@@ -15,14 +15,9 @@ function resetSnesToMenu() {
   ipcRenderer.send("resetSnesToMenu");
 }
 
-function toggleDynamicApp(appList, display) {
-  ipcRenderer.send("toggleApp", appList, display);
+function toggleDynamicApp(app) {
+  ipcRenderer.send("toggleApp", app);
 }
-
-ipcRenderer.on('setSNESControllerNotesBlurb', (_event, blurb) => {
-  let pre = document.getElementById("SNESControllerNotesBlurb");
-  pre.textContent = blurb;
-});
 
 function updateAppStatus(app, status) {
   let button = document.getElementById(app + "_button");
@@ -36,7 +31,7 @@ function updateAppStatus(app, status) {
     button.textContent = app;
     button.style.backgroundColor = running_state;
     button.style.border = '4px solid #000'
-  } else if (status === 'stopped') {
+  } else if (status === 'stopped' || status === undefined) {
     button.textContent = app;
     button.style.backgroundColor = button_color;
   } else if (status === 'error') {
@@ -51,23 +46,22 @@ function updateAppStatus(app, status) {
 }
 
 ipcRenderer.on('initAppList', (_event, apps) => {
-  for (const [key, value] of Object.entries(apps)) {
+  for (const app of apps) {
     let drawer = document.getElementById("customAppDrawer");
-    let app_button = document.getElementById(value.display + "_button");
+    let app_button = document.getElementById(app.name + "_button");
     if (app_button === undefined || app_button === null) {
       app_button = document.createElement("button");
       drawer.appendChild(app_button);
-      app_button.id = value.display + "_button";
+      app_button.id = app.name + "_button";
       app_button.className = "appbutton";
-      app_button.apps = [];
-      app_button.appDisplay = value.display;
+      app_button.app = app;
+      app_button.appDisplay = app.name;
       app_button.appStatus = 'ok';
       app_button.addEventListener("click", () => {
-        toggleDynamicApp(app_button.apps, app_button.appDisplay);
+        toggleDynamicApp(app_button.app);
       });
     }
-    app_button.apps.push(value);
-    updateAppStatus(value.display, value.error === 'ok' ? 'stopped' : 'error');
+    updateAppStatus(app.name, app.error === 'ok' || app.error === undefined ? 'stopped' : 'error');
   }
 })
 
