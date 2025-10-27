@@ -11,6 +11,7 @@ export type AppDescription = {
     working_directory: string;
     env: Map<string, string>;
     args: string[];
+    launch_on_start: boolean;
 }
 
 export type ProcessMap = Map<AppId, ChildProcess>;

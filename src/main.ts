@@ -47,19 +47,14 @@ function loadSettings() {
         let configData: SnesPanelConfig = json_config as SnesPanelConfig;
         console.log(configData);
 
-        if (configData.start !== undefined) {
-            for (const name of configData.start) {
-                for (const app_desc of configData.apps) {
-                    if (app_desc.name == name) {
-                        app_desc.error = 'ok';
-                        startProcess(app_desc);
-                    }
-                }
-            }
-        }
-
         mainWindow.webContents.send("initAppList", configData.apps);
         mainWindow.webContents.send("initBrowserWindowList", configData.webpages);
+
+        for(const app_data of configData.apps) {
+            if(app_data.launch_on_start === true) {
+                startProcess(app_data);
+            }
+        }
 
         snesControls.snesAddWindow(mainWindow);
         snesControls.snesConnect(configData.usb2snes.usb2snes_address);

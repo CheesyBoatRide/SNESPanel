@@ -7,7 +7,8 @@
             "working_directory": "E:/Speedrunning/sni-v0.0.96-windows-amd64",
             "env": {
                 "SNI_USB2SNES_LISTEN_ADDRS": "0.0.0.0:23074,0.0.0.0:8080"
-            }
+            },
+            "launch_on_start": true
         },
         {
             "name": "File Explorer",
@@ -43,7 +44,6 @@
         "SNES Controls": true,
         "Subversion Tracker": false
     },
-    "start_apps": [],
     "usb2snes": {
         "usb2snes_address": "ws://localhost:23074/"
     },

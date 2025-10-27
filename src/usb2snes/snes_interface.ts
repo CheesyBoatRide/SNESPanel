@@ -1,33 +1,29 @@
 
 
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow } from 'electron';
 import WebSocket from 'ws';
 
 
 let wsConnection: WebSocket | null;
-
 let lastRequest: string = "";
-
 let snesAddress: string = "";
-
 let windows: BrowserWindow[] = [];
-
 let connected = false;
-
+let timerId: ReturnType<typeof setTimeout>; // Type for the timeout ID
 
 function updateConnectionStatus() {
     for (let i = 0; i < windows.length; i++) {
         windows[i].webContents.send("snesConnectionStatus", connected);
     }
-    setTimeout(function () { updateConnectionStatus(); }, 1000);
 }
 
-function recievedDeviceList(msg: any) {
+function recievedDeviceList(msg: string) {
     if(connected) {
         return;
     }
 
-    let Results = msg.Results;
+    let device_list = JSON.parse(msg);
+    let Results = device_list.Results;
     if (Results === undefined || Results.length == 0) {
         reconnect();
     } else if(wsConnection !== null) {
@@ -42,17 +38,18 @@ function recievedDeviceList(msg: any) {
             console.log(JSON.stringify(attach_to_device));
             wsConnection.send(JSON.stringify(attach_to_device));
             connected = true;
+            updateConnectionStatus();
         }
     }
 }
 
 function recievedAddress(msg: ArrayBuffer) {
     for (let i = 0; i < windows.length; i++) {
-        windows[i].webContents.send("receiveSnesAddress", msg);
+        windows[i].webContents.send("receiveSnesAddress", Buffer.from(msg));
     }
 }
 
-function decodeMsg(msg: any) {
+function decodeMsg(msg: string) {
     if (lastRequest === "DeviceList") {
         recievedDeviceList(msg)
     }
@@ -60,8 +57,11 @@ function decodeMsg(msg: any) {
 }
 
 function reconnect() {
+    wsConnection?.terminate();
+    wsConnection = null;
     connected = false;
-    setTimeout(function () { snesConnect(snesAddress); }, 1000);
+    updateConnectionStatus();
+    timerId = setTimeout(function () { snesConnect(snesAddress); }, 1000);
 }
 
 function wsConnected() {
@@ -97,44 +97,49 @@ export function snesRemoveWindow(window: BrowserWindow) {
 }
 
 export function snesConnect(address: string) {
+    if (wsConnection !== null) {
+        console.error("Dangling websocket client");
+    }
+    
+    clearTimeout(timerId);
+
     snesAddress = address;
     wsConnection = new WebSocket(address);
+    wsConnection.binaryType = 'arraybuffer';
 
-    wsConnection.onopen = () => {
+    wsConnection.onopen = function () {
         wsConnected();
     };
 
-    wsConnection.onclose = (event) => {
+    wsConnection.onclose = function (event) {
         console.log('ws is closed with code: ' + event.code + ' reason: ' + event.reason);
         reconnect();
     };
 
-    wsConnection.onerror = (error) => {
+    wsConnection.onerror = function (error) {
         console.log("Connection Error: " + error);
         reconnect();
     };
 
-    wsConnection.onmessage = (event) => {
+    wsConnection.onmessage = function (event: WebSocket.MessageEvent) {
         if (event.data instanceof ArrayBuffer) {
             if (lastRequest === "GetAddress") {
                 recievedAddress(event.data)
             }
         } else {
             try {
-                const parsedMessage = JSON.parse(event.data as string);
+                const parsedMessage = event.data as string;
                 console.log('Parsed JSON message:', parsedMessage);
-                decodeMsg(JSON.parse(parsedMessage));
+                decodeMsg(parsedMessage);
             } catch (e) {
                 console.log('Received non-JSON message:', event.data);
             }
         }
     };
-
-    updateConnectionStatus();
 }
 
 export function snesReset() {
-    if(wsConnection === null) {
+    if(wsConnection === null || connected === false) {
         return;
     }
 
@@ -147,7 +152,7 @@ export function snesReset() {
 }
 
 export function snesResetToMenu() {
-    if(wsConnection === null) {
+    if(wsConnection === null || connected === false) {
         return;
     }
 
@@ -160,7 +165,7 @@ export function snesResetToMenu() {
 }
 
 export function snesRequestMemoryValue(address: string, offset: number) {
-    if(wsConnection === null) {
+    if(wsConnection === null || connected === false) {
         return;
     }
 
