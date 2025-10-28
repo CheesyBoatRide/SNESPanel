@@ -12,10 +12,13 @@ module.exports = {
     ],
     afterExtract:[
       async (buildPath, electronVersion, platform, arch, callback) => {
-        fs.copyFileSync(path.resolve(__dirname, 'config.toml'), path.join(buildPath, 'config.toml'));
+        fs.copyFileSync(path.resolve(__dirname, 'config.json'), path.join(buildPath, 'config.json'));
+        fs.copyFileSync(path.resolve(__dirname, 'config.schema.json'), path.join(buildPath, 'config.schema.json'));
         fs.copyFileSync(path.resolve(__dirname, 'README.md'), path.join(buildPath, 'README.md'));
         fs.copyFileSync(path.resolve(__dirname, 'screenshot.png'), path.join(buildPath, 'screenshot.png'));
         fs.copyFileSync(path.resolve(__dirname, 'LICENSE'), path.join(buildPath, 'LICENSE'));
+
+        fs.cpSync(path.resolve(__dirname, 'src/applets'), path.join(buildPath, 'src/applets'), { recursive: true });
 
         // Call the callback when done
         callback();
