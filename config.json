@@ -1,0 +1,110 @@
+{
+    "apps": [
+        {
+            "name": "SNI",
+            "args": [],
+            "cmd": "./sni.exe",
+            "working_directory": "E:/Speedrunning/sni-v0.0.96-windows-amd64",
+            "env": {
+                "SNI_USB2SNES_LISTEN_ADDRS": "0.0.0.0:23074,0.0.0.0:8080"
+            },
+            "launch_on_start": true
+        },
+        {
+            "name": "File Explorer",
+            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/manage_files.exe"
+        },
+        {
+            "name": "Metroid Inputs",
+            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/InputDisplay/snes_input_display-windows-amd64.exe",
+            "args": [
+                "settings_sm.toml"
+            ]
+        },
+        {
+            "name": "SMW Inputs",
+            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/InputDisplay/snes_input_display-windows-amd64.exe",
+            "args": [
+                "settings_smw.toml"
+            ]
+        },
+        {
+            "name": "Tracker",
+            "cmd": "E:/Speedrunning/EmoTracker/EmoTracker.exe"
+        },
+        {
+            "name": "SM Tile Viewer",
+            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/SMTileViewer/SMTileViewer.exe"
+        },
+        {
+            "name": "Timer",
+            "cmd": "E:/Speedrunning/LiveSplit_1.8.21/LiveSplit.exe",
+            "args": [
+                "-l", "E:/Speedrunning/splits/timer.lsl", "-s", "E:/Speedrunning/splits/timer.lss"
+            ]
+        },
+        {
+            "name": "PRKD Splits",
+            "cmd": "E:/Speedrunning/LiveSplit_1.8.21/LiveSplit.exe",
+            "args": [
+                "-l", "E:/Speedrunning/splits/PRKD.lsl", "-s", "E:/Speedrunning/splits/Super Metroid - Any% (PRKD, NTSC, SNES).lss"
+            ]
+        },
+        {
+            "name": "KPDR Splits",
+            "cmd": "E:/Speedrunning/LiveSplit_1.8.21/LiveSplit.exe",
+            "args": [
+                "-l", "E:/Speedrunning/splits/KPDR.lsl", "-s", "E:/Speedrunning/splits/Super Metroid - Any% (KPDR, NTSC).lss"
+            ]
+        },
+        {
+            "name": "GPW3 Splits",
+            "cmd": "E:/Speedrunning/LiveSplit_1.8.21/LiveSplit.exe",
+            "args": [
+                "-l", "E:/Speedrunning/splits/gpw3_any.lsl", "-s", "E:/Speedrunning/splits/Grand Poo World 3 - Any%.lss"
+            ]
+        },
+        {
+            "name": "GPW3 End Segment Splits",
+            "cmd": "E:/Speedrunning/LiveSplit_1.8.21/LiveSplit.exe",
+            "args": [
+                "-l", "E:/Speedrunning/splits/gpw3_last_world.lsl", "-s", "E:/Speedrunning/splits/Grand Poo World 3 - Any% - Last World Segment.lss"
+            ]
+        },
+        {
+            "name": "Archipelago SNI Client",
+            "cmd": "E:/Speedrunning/Archipelago/ArchipelagoSNIClient.exe"
+        }
+    ],
+    "applets": [
+        {
+            "name": "TowerOfFate",
+            "html": "./src/applets/gpw3_tower_of_fate/tower_of_fate.html"
+        },
+        {
+            "name": "Mario Death Counter",
+            "html": "./src/applets/mario_death_counter/mario_death_counter.html"
+        },
+        {
+            "name": "Funtoon",
+            "html": "https://funtoon.party/funtoon2snes/",
+            "embedded": true
+        },
+        {
+            "name": "Subversion Tracker",
+            "html": "https://cout.github.io/sm_subversion_tracker/",
+            "width": 800,
+            "height": 600,
+            "dev_tools": true
+        }
+    ],
+    "expanded_groups": [
+        "Custom Apps",
+        "SNES Controls",
+        "Subversion Tracker",
+        "Applets"
+    ],
+    "usb2snes": {
+        "usb2snes_address": "ws://localhost:23074/"
+    }
+}

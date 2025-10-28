@@ -13,6 +13,8 @@ document.onkeydown = () => false; // no keyboard presses right now
 function refreshValues() {
     if(snes_connected) {
         ipcRenderer.send("snesGetAddress", pose_ram_address, pose_ram_size);
+    } else {
+        console.error("Not connected");
     }
     
     setTimeout(function () { refreshValues(); }, 16);

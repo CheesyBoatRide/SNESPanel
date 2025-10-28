@@ -1,0 +1,98 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "Map<string,string>": {
+            "properties": {
+                "__@toStringTag@245": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "applets": {
+            "items": {
+                "properties": {
+                    "dev_tools": {
+                        "type": "boolean"
+                    },
+                    "embedded": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "number"
+                    },
+                    "html": {
+                        "type": "string"
+                    },
+                    "launch_on_start": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "width": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "apps": {
+            "items": {
+                "properties": {
+                    "args": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "cmd": {
+                        "type": "string"
+                    },
+                    "env": {
+                        "$ref": "#/definitions/Map<string,string>"
+                    },
+                    "error": {
+                        "type": "string"
+                    },
+                    "launch_on_start": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "working_directory": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "expanded_groups": {
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
+        },
+        "usb2snes": {
+            "properties": {
+                "usb2snes_address": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "type": "object"
+}
+
