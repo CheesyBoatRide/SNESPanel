@@ -34,7 +34,6 @@ export type SnesUsbConfig = {
 export type SnesPanelConfig = {
     apps: AppDescription[]; // List of app descriptions to add custom buttons for
     applets: AppletDescription[]; // List of applets (embedded or popup html - local or remote)
-    start: string[]; // List of apps to start on launch of panel
     usb2snes: SnesUsbConfig; // Config for usb2snes connection
     expanded_groups: string[]; // List of groups to be expanded
 }

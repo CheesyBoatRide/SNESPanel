@@ -3,7 +3,7 @@
     "definitions": {
         "Map<string,string>": {
             "properties": {
-                "__@toStringTag@246": {
+                "__@toStringTag@245": {
                     "type": "string"
                 },
                 "size": {
@@ -79,12 +79,6 @@
             "type": "array"
         },
         "expanded_groups": {
-            "items": {
-                "type": "string"
-            },
-            "type": "array"
-        },
-        "start": {
             "items": {
                 "type": "string"
             },
