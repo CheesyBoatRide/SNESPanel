@@ -1,4 +1,4 @@
-import { AppId, AppDescription, ProcessMap, AppletMap, SnesUsbConfig, SnesPanelConfig } from './types';
+import { AppId, AppDescription, AppletDescription, ProcessMap, AppletMap, SnesUsbConfig, SnesPanelConfig } from './types';
 import { app, BrowserWindow, Menu, ipcMain } from 'electron';
 import { ChildProcess, spawn } from 'child_process';
 
@@ -10,11 +10,11 @@ import * as snesControls from './usb2snes/snes_interface';
 let mainWindow: BrowserWindow | null;
 let execPath: string;
 let processes: ProcessMap = new Map();
-let subWindows: AppletMap= new Map();
+let subWindows: AppletMap = new Map();
 
 
 function loadSettings() {
-    if( mainWindow === null) {
+    if (mainWindow === null) {
         console.error("Invalid main window");
         return;
     }
@@ -38,7 +38,7 @@ function loadSettings() {
             console.error(err);
             return;
         }
-        if( mainWindow === null) {
+        if (mainWindow === null) {
             console.error("Invalid main window");
             return;
         }
@@ -48,11 +48,17 @@ function loadSettings() {
         console.log(configData);
 
         mainWindow.webContents.send("initAppList", configData.apps);
-        mainWindow.webContents.send("initBrowserWindowList", configData.webpages);
+        mainWindow.webContents.send("initApplets", configData.applets);
 
-        for(const app_data of configData.apps) {
-            if(app_data.launch_on_start === true) {
+        for (const app_data of configData.apps) {
+            if (app_data.launch_on_start === true) {
                 startProcess(app_data);
+            }
+        }
+
+        for (const applet_data of configData.applets) {
+            if (applet_data.launch_on_start === true && applet_data.embedded !== true) {
+                startApplet(applet_data);
             }
         }
 
@@ -82,10 +88,10 @@ function createMainWindow() {
     });
 
     mainWindow.on('close', () => {
-        if(mainWindow !== null) {
+        if (mainWindow !== null) {
             snesControls.snesRemoveWindow(mainWindow);
         }
-        
+
         for (const [id, childProcess] of processes.entries()) {
             killProcess(childProcess);
         }
@@ -103,7 +109,7 @@ const menu = [
             {
                 label: 'Dev Tools',
                 click: () => {
-                    if(mainWindow !== null) {
+                    if (mainWindow !== null) {
                         mainWindow.webContents.openDevTools();
                     }
                 },
@@ -145,70 +151,106 @@ function updateAppStatus(appDesc: AppDescription) {
         }
     }
 
-    console.log(appDesc);
-
     let status = 'error';
-    if(appDesc.error === 'ok' || appDesc.error === undefined) {
-        if (processes.has(appDesc.name) || subWindows.has(appDesc.name)) {
+    if (appDesc.error === 'ok' || appDesc.error === undefined) {
+        if (processes.has(appDesc.name)) {
             status = 'running';
         } else {
             status = 'stopped';
         }
     }
 
-    if(mainWindow !== null) {
-        mainWindow.webContents.send("updateAppStatus", appDesc.name, status);
+    if (mainWindow !== null) {
+        mainWindow.webContents.send("updateButtonStatus", appDesc.name, status);
     }
 }
 
-function untrackWindow(id: AppId, childWindow: BrowserWindow) {
-    subWindows.delete(id);
-    snesControls.snesRemoveWindow(childWindow);
+function updateAppletStatus(appDesc: AppletDescription) {
+    let status = 'error';
+    if (appDesc.error === 'ok' || appDesc.error === undefined) {
+        if (subWindows.has(appDesc.name)) {
+            status = 'running';
+        } else {
+            status = 'stopped';
+        }
+    }
+
+    if (mainWindow !== null) {
+        mainWindow.webContents.send("updateButtonStatus", appDesc.name, status);
+    }
 }
 
-function loadSubWindow(appDesc: AppDescription) {
+function isRemoteUrl(urlString: string): boolean {
+    try {
+        const url = new URL(urlString);
+        // A remote URL typically has a protocol (like http:, https:, ftp:)
+        // and a hostname. File URLs (file:) are technically absolute but might not be considered "remote"
+        // in all contexts. This example focuses on common web protocols.
+        return (url.protocol === 'http:' || url.protocol === 'https:') && !!url.hostname;
+    } catch (error) {
+        // If the URL constructor throws an error, it's likely not a valid absolute URL
+        // and therefore not a remote URL.
+        return false;
+    }
+}
+
+function loadSubWindow(appDesc: AppletDescription) {
+    let width: number = appDesc.width !== undefined ? appDesc.width : 300;
+    let height: number = appDesc.height !== undefined ? appDesc.height : 250;
+
     let window = new BrowserWindow({
         title: appDesc.name,
-        width: 300,
-        height: 250,
+        width: width,
+        height: height,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
             backgroundThrottling: false // Disable throttling for this window
         }
     });
-    //window.webContents.openDevTools();
-    let html = appDesc.html;
-    if (!fs.existsSync(html)) {
-        html = path.join(execPath, html);
-    }
-    html = fs.realpathSync(html);
 
-    window.loadFile(html);
+    if (appDesc.dev_tools === true) {
+        window.webContents.openDevTools();
+    }
+
+    let html = appDesc.html;
+    if (isRemoteUrl(html)) {
+        window.loadURL(html);
+    } else {
+        if (!fs.existsSync(html)) {
+            html = path.join(execPath, html);
+        }
+        html = fs.realpathSync(html);
+
+        window.loadFile(html);
+    }
+
     window.setMenu(null)
     snesControls.snesAddWindow(window);
 
     window.on('close', () => {
-        untrackWindow(appDesc.name, window);
-        updateAppStatus(appDesc);
+        subWindows.delete(appDesc.name);
+        snesControls.snesRemoveWindow(window);
+        updateAppletStatus(appDesc);
     });
 
     subWindows.set(appDesc.name, window);
 }
 
-function startProcess(appDesc: AppDescription) {
 
-    if(appDesc.html !== undefined) {
+function startApplet(appDesc: AppletDescription) {
+    if (appDesc.html !== undefined) {
         loadSubWindow(appDesc);
-        updateAppStatus(appDesc);
-        return;
+        updateAppletStatus(appDesc);
     }
+}
 
+function startProcess(appDesc: AppDescription) {
     let cmd = appDesc.cmd;
-    let working_dir = appDesc.working_directory 
+    let working_dir = appDesc.working_directory
 
     if (!fs.existsSync(cmd)) {
-        if(working_dir !== undefined) {
+        if (working_dir !== undefined) {
             if (!fs.existsSync(working_dir)) {
                 working_dir = path.join(execPath, working_dir);
             }
@@ -218,7 +260,7 @@ function startProcess(appDesc: AppDescription) {
         }
     }
 
-    if(working_dir === undefined) {
+    if (working_dir === undefined) {
         working_dir = path.dirname(cmd);
     }
 
@@ -227,9 +269,9 @@ function startProcess(appDesc: AppDescription) {
 
     console.log("Command: %s", cmd);
     console.log("Working Directory: %s", working_dir);
- 
+
     let env = process.env;
-    if(appDesc.env !== undefined) {
+    if (appDesc.env !== undefined) {
         Object.assign(env, appDesc.env);
     }
     let args: string[] = appDesc.args !== undefined ? appDesc.args : [];
@@ -291,15 +333,19 @@ function killProcess(childProcess: ChildProcess) {
 }
 
 function stopApp(id: AppId) {
-    if( processes.has(id)) {
+    if (processes.has(id)) {
         let childProcess: ChildProcess | undefined = processes.get(id);
-        if(childProcess !== undefined) {
+        if (childProcess !== undefined) {
             killProcess(childProcess);
         }
         processes.delete(id);
-    } else if (subWindows.has(id)) {
+    }
+}
+
+function stopApplet(id: AppId) {
+    if (subWindows.has(id)) {
         let window: BrowserWindow | undefined = subWindows.get(id);
-        if(window !== undefined) {
+        if (window !== undefined) {
             window.close();
             subWindows.delete(id);
         }
@@ -307,12 +353,20 @@ function stopApp(id: AppId) {
 }
 
 ipcMain.on('toggleApp', (_event, appDesc: AppDescription) => {
-    if (!(processes.has(appDesc.name)) && !(subWindows.has(appDesc.name))) {
+    if (!processes.has(appDesc.name)) {
         startProcess(appDesc);
     } else {
         stopApp(appDesc.name);
     }
-})
+});
+
+ipcMain.on('toggleApplet', (_event, appDesc: AppletDescription) => {
+    if (!subWindows.has(appDesc.name)) {
+        startApplet(appDesc);
+    } else {
+        stopApplet(appDesc.name);
+    }
+});
 
 ipcMain.on('resetSnes', (_event) => {
     snesControls.snesReset();

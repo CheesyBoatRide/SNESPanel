@@ -28,6 +28,13 @@
                 "settings_smw.toml"
             ]
         },
+
+        {
+            "name": "Tracker",
+            "cmd": "E:/Speedrunning/EmoTracker/EmoTracker.exe"
+        }
+    ],
+    "applets": [
         {
             "name": "TowerOfFate",
             "html": "./src/applets/gpw3_tower_of_fate/tower_of_fate.html"
@@ -37,21 +44,25 @@
             "html": "./src/applets/mario_death_counter/mario_death_counter.html"
         },
         {
-            "name": "Tracker",
-            "cmd": "E:/Speedrunning/EmoTracker/EmoTracker.exe"
+            "name": "Funtoon",
+            "html": "https://funtoon.party/funtoon2snes/",
+            "embedded": true
+        },
+        {
+            "name": "Subversion Tracker",
+            "html": "https://cout.github.io/sm_subversion_tracker/",
+            "width": 800,
+            "height": 600,
+            "dev_tools": true
         }
     ],
-    "expanded_groups": {
-        "Custom Apps": true,
-        "Funtoon": false,
-        "SNES Controls": true,
-        "Subversion Tracker": false
-    },
+    "expanded_groups": [
+        "Custom Apps",
+        "SNES Controls",
+        "Subversion Tracker",
+        "Applets"
+    ],
     "usb2snes": {
         "usb2snes_address": "ws://localhost:23074/"
-    },
-    "webpages": {
-        "Funtoon": "https://funtoon.party/funtoon2snes/",
-        "Subversion Tracker": "https://cout.github.io/sm_subversion_tracker/"
     }
 }
