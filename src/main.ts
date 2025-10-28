@@ -177,7 +177,7 @@ function loadSubWindow(appDesc: AppDescription) {
             backgroundThrottling: false // Disable throttling for this window
         }
     });
-
+    //window.webContents.openDevTools();
     let html = appDesc.html;
     if (!fs.existsSync(html)) {
         html = path.join(execPath, html);

@@ -10,11 +10,14 @@ let snesAddress: string = "";
 let windows: BrowserWindow[] = [];
 let connected = false;
 let timerId: ReturnType<typeof setTimeout>; // Type for the timeout ID
+let statusTimerId: ReturnType<typeof setTimeout>; // Type for the timeout ID
 
 function updateConnectionStatus() {
+    clearTimeout(statusTimerId);
     for (let i = 0; i < windows.length; i++) {
         windows[i].webContents.send("snesConnectionStatus", connected);
     }
+    statusTimerId = setTimeout(function () { updateConnectionStatus(); }, 1000);
 }
 
 function recievedDeviceList(msg: string) {
@@ -44,8 +47,9 @@ function recievedDeviceList(msg: string) {
 }
 
 function recievedAddress(msg: ArrayBuffer) {
+    const byteArray = new Uint8Array(msg);
     for (let i = 0; i < windows.length; i++) {
-        windows[i].webContents.send("receiveSnesAddress", Buffer.from(msg));
+        windows[i].webContents.send("receiveSnesAddress", byteArray);
     }
 }
 

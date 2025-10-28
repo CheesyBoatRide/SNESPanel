@@ -30,8 +30,11 @@
         },
         {
             "name": "TowerOfFate",
-            "display": "Tower Of Fate",
             "html": "./src/applets/gpw3_tower_of_fate/tower_of_fate.html"
+        },
+        {
+            "name": "Mario Death Counter",
+            "html": "./src/applets/mario_death_counter/mario_death_counter.html"
         },
         {
             "name": "Tracker",
