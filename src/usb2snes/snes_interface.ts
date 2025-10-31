@@ -61,9 +61,7 @@ function decodeMsg(msg: string) {
 }
 
 function reconnect() {
-    wsConnection?.terminate();
-    wsConnection = null;
-    connected = false;
+    snesDisconnect();
     updateConnectionStatus();
     timerId = setTimeout(function () { snesConnect(snesAddress); }, 1000);
 }
@@ -140,6 +138,12 @@ export function snesConnect(address: string) {
             }
         }
     };
+}
+
+export function snesDisconnect() {
+    wsConnection?.terminate();
+    wsConnection = null;
+    connected = false;
 }
 
 export function snesReset() {
