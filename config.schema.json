@@ -3,7 +3,7 @@
     "definitions": {
         "Map<string,string>": {
             "properties": {
-                "__@toStringTag@245": {
+                "__@toStringTag@250": {
                     "type": "string"
                 },
                 "size": {
@@ -86,6 +86,17 @@
         },
         "usb2snes": {
             "properties": {
+                "hotkeys": {
+                    "properties": {
+                        "menu": {
+                            "type": "string"
+                        },
+                        "reset": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
                 "usb2snes_address": {
                     "type": "string"
                 }

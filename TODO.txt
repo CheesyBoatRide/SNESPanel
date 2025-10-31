@@ -1,4 +1,4 @@
-Hotkeys for SNES Controls
+
 Help dialog
 UI for building layouts
 Super Metroid memory tinker (refill health/ammo, blue suit, items/bosses?)

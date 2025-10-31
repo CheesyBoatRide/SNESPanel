@@ -27,8 +27,15 @@ export type AppletDescription = {
 export type ProcessMap = Map<AppId, ChildProcess>;
 export type AppletMap = Map<AppId, BrowserWindow>;
 
+// https://www.electronjs.org/docs/latest/tutorial/keyboard-shortcuts#accelerators
+export type HotKeyConfig = {
+    reset: string;
+    menu: string;
+}
+
 export type SnesUsbConfig = {
     usb2snes_address: string;
+    hotkeys: HotKeyConfig;
 }
 
 export type SnesPanelConfig = {

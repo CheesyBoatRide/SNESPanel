@@ -1,5 +1,5 @@
 import { AppId, AppDescription, AppletDescription, ProcessMap, AppletMap, SnesUsbConfig, SnesPanelConfig } from './types';
-import { app, BrowserWindow, Menu, ipcMain } from 'electron';
+import { app, globalShortcut, BrowserWindow, Menu, ipcMain } from 'electron';
 import { ChildProcess, spawn } from 'child_process';
 
 import * as path from 'path';
@@ -65,7 +65,18 @@ function loadSettings() {
         snesControls.snesAddWindow(mainWindow);
         snesControls.snesConnect(configData.usb2snes.usb2snes_address);
 
-        mainWindow.webContents.send("applyCollapseSettings", configData.expanded_groups)
+        mainWindow.webContents.send("applyCollapseSettings", configData.expanded_groups);
+
+        if(configData.usb2snes.hotkeys.reset !== undefined) {
+            globalShortcut.register(configData.usb2snes.hotkeys.reset, () => {
+                snesControls.snesReset();
+            });
+        }
+        if(configData.usb2snes.hotkeys.menu !== undefined) {
+            globalShortcut.register(configData.usb2snes.hotkeys.menu, () => {
+                snesControls.snesResetToMenu();
+            });
+        }
     });
 
 }
@@ -132,7 +143,6 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0)
             createMainWindow();
     })
-
 
 })
 

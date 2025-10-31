@@ -105,6 +105,10 @@
         "Applets"
     ],
     "usb2snes": {
-        "usb2snes_address": "ws://localhost:23074/"
+        "usb2snes_address": "ws://localhost:23074/",
+        "hotkeys": {
+            "reset": "F11",
+            "menu" : "Shift+F11"
+        }
     }
 }
