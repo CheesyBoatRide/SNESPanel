@@ -1,0 +1,288 @@
+/* Super Metroid - inspired color theme */
+
+/* Palette + semantic variables */
+:root{
+  --radius: 8px;
+  --spacing: 12px;
+  --font-sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Base / surface (unchanged dark base) */
+  --bg: #080a0e;
+  --surface: #0f1720;
+  --muted-surface: #121622;
+  --glass: rgba(255,255,255,0.03);
+
+  /* Text */
+  --text: #dfeff3;
+  --muted: #9fb3b9;
+  --subtle: rgba(223,239,243,0.65);
+
+  /* Super Metroid logo-inspired colors */
+  --logo-gold-1: #ffd94a;   /* bright yellow highlight */
+  --logo-gold-2: #ffb84a;   /* warm orange */
+  --logo-orange: #ff8a2b;   /* strong orange */
+  --logo-red: #d9411b;      /* deep red ridge / outline */
+  --logo-purple: #b468f0;   /* retain purple for variety (from previous) */
+
+  /* Primary / neon accents (keep cyan as system accent) */
+  --primary: var(--logo-orange);
+  --primary-700: var(--logo-red);
+  --secondary: var(--logo-gold-1);  /* use logo gold as a secondary accent */
+  --accent: var(--logo-orange);
+
+  /* States */
+  --success: #76e4b5;
+  --warning: #ffcd75;
+  --danger: #ff6b6b;
+
+  /* UI details */
+  --elevation-1: rgba(0,0,0,0.45);
+  --focus-ring: rgba(255,138,43,0.16); /* rgba(#ff8a2b, 0.16) */
+  --glass-border: rgba(255,255,255,0.03);
+}
+
+/* Page / body */
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(180deg, var(--bg) 0%, #050608 100%);
+  color: var(--text);
+  margin: 0;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Containers / cards */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 6px 18px var(--elevation-1);
+  border-radius: var(--radius);
+  padding: calc(var(--spacing) * 1);
+  color: var(--text);
+}
+
+/* Headings and text */
+h1, h2, h3, h4 {
+  color: var(--text);
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+p, label {
+  color: var(--subtle);
+  margin: 0;
+}
+
+/* Muted / secondary text */
+.muted {
+  color: var(--muted);
+  font-size: 0.9em;
+}
+
+/* Buttons - base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform .06s ease, box-shadow .12s ease, opacity .12s ease;
+  user-select: none;
+}
+
+/* Primary button */
+.btn-primary {
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-700) 100%);
+  color: #1a0b00; /* dark text that reads well on orange */
+  box-shadow:
+    0 6px 18px rgba(8,12,14,0.70),
+    0 0 14px rgba(255,138,43,0.12); /* warm orange glow */
+  border: 1px solid rgba(217,65,27,0.22);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 10px 28px rgba(8,12,14,0.75),
+    0 0 28px rgba(255,138,43,0.20);
+}
+.btn-primary:active { transform: translateY(0); }
+.btn-primary[disabled] {
+  opacity: 0.45;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Secondary button */
+.btn-secondary {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+  color: var(--text);
+  border: 1px solid rgba(180,120,240,0.14);
+  box-shadow: 0 6px 16px rgba(2,6,10,0.45);
+}
+.btn-secondary:hover {
+  background: linear-gradient(180deg, rgba(180,104,240,0.06), rgba(255,255,255,0.00));
+  transform: translateY(-1px);
+}
+
+/* Ghost / outline button */
+.btn-ghost {
+  background: transparent;
+  color: var(--primary);
+  border: 1px dashed rgba(255,138,43,0.18);
+  box-shadow: none;
+}
+.btn-ghost:hover {
+  background: rgba(255,138,43,0.03);
+}
+
+/* Small icon button */
+.btn-icon {
+  padding: 6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+/* Inputs / selects */
+.input, input[type="text"], input[type="number"], textarea, select {
+  background: linear-gradient(180deg, var(--muted-surface), rgba(255,255,255,0.01));
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 10px 12px;
+  border-radius: 6px;
+  outline: none;
+  box-shadow: inset 0 -1px 0 rgba(255,255,255,0.01);
+  transition: box-shadow .12s ease, border-color .12s ease;
+}
+.input:focus, input:focus, textarea:focus, select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 6px 20px var(--focus-ring);
+}
+
+/* Labels paired with inputs */
+.form-row {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-bottom: 10px;
+}
+
+/* Card header with subtle highlight */
+.card-header {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom: 10px;
+}
+.card-title {
+  font-weight:700;
+  color: var(--text);
+}
+.card-sub {
+  color: var(--muted);
+  font-size:0.9em;
+}
+
+/* small UI helpers */
+.kbd {
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:6px;
+  background: rgba(255,255,255,0.02);
+  color: var(--subtle);
+  border:1px solid rgba(255,255,255,0.03);
+  font-weight:600;
+  font-size:0.9em;
+}
+
+/* accent strip */
+.accent {
+  background: linear-gradient(90deg, var(--secondary), var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* subtle separators */
+.hr {
+  height:1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  margin: 8px 0;
+}
+
+/* focus utilities for accessibility */
+:focus {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* tiny responsiveness */
+.row {
+  display:flex;
+  gap:12px;
+}
+.col {
+  flex:1;
+}
+
+/* small status badges */
+.badge {
+  display:inline-block;
+  padding:6px 8px;
+  border-radius:999px;
+  font-size:0.85em;
+  font-weight:700;
+}
+.badge-success { background: rgba(118,228,181,0.12); color: var(--success); border:1px solid rgba(118,228,181,0.08); }
+.badge-danger { background: rgba(255,107,107,0.08); color: var(--danger); border:1px solid rgba(255,107,107,0.06); }
+.badge-accent { background: rgba(255,184,107,0.09); color: var(--accent); border:1px solid rgba(255,184,107,0.06); }
+
+/* small card glow example for important panels */
+.panel-glow {
+  position:relative;
+  overflow:visible;
+}
+.panel-glow::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgba(255,138,43,0.06), transparent 40%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+/* Logo-style gradient for headings / important text */
+.logo-accent {
+  background: linear-gradient(90deg, var(--logo-gold-1), var(--logo-orange) 45%, var(--logo-red) 75%, var(--logo-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-shadow:
+    0 2px 8px rgba(0,0,0,0.65),
+    0 0 18px rgba(255,168,90,0.06);
+}
+
+/* A stronger badge variant using logo colors */
+.badge-logo {
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:0.9em;
+  font-weight:800;
+  background: linear-gradient(180deg, rgba(255,217,74,0.10), rgba(255,138,43,0.06));
+  color: #1a0b00; /* dark text over the gold */
+  border: 1px solid rgba(255,138,43,0.12);
+  box-shadow: 0 6px 22px rgba(217,65,27,0.06), 0 0 18px rgba(255,168,90,0.07);
+}
+
+/* Example: make .accent use logo gold/orange for inline highlights */
+.accent {
+  background: linear-gradient(90deg, var(--logo-gold-1), var(--logo-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

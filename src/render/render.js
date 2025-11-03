@@ -7,12 +7,12 @@ const ipcRenderer = require('electron').ipcRenderer;
 
 document.onkeydown = () => false; // no keyboard presses right now
 
-function resetSnes() {
-  ipcRenderer.send("resetSnes");
+function snesReset() {
+  ipcRenderer.send("snesReset");
 }
 
-function resetSnesToMenu() {
-  ipcRenderer.send("resetSnesToMenu");
+function snesResetToMenu() {
+  ipcRenderer.send("snesResetToMenu");
 }
 
 function toggleDynamicApp(app) {

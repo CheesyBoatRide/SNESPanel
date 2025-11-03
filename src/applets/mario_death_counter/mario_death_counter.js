@@ -12,7 +12,7 @@ document.onkeydown = () => false; // no keyboard presses right now
 
 function refreshValues() {
     if(snes_connected) {
-        ipcRenderer.send("snesGetAddress", pose_ram_address, pose_ram_size);
+        ipcRenderer.send("snesRequestMemoryValue", pose_ram_address, pose_ram_size);
     } else {
         console.error("Not connected");
     }
@@ -26,7 +26,7 @@ ipcRenderer.on('snesConnectionStatus', (_event, connected) => {
     snes_connected = connected;
 });
 
-ipcRenderer.on('receiveSnesAddress', (_event, msg) => {
+ipcRenderer.on('snesAddressValue', (_event, address, msg) => {
     let pose = msg[0];
     if (last_pose !== pose && pose === 0x3E) {
         death_count++;

@@ -78,6 +78,13 @@
     ],
     "applets": [
         {
+            "name": "Super Metroid Debug",
+            "html": "./src/applets/super_metroid_debug/super_metroid_debug.html",
+            "width": 1080,
+            "height": 720,
+            "dev_tools": true
+        },
+        {
             "name": "TowerOfFate",
             "html": "./src/applets/gpw3_tower_of_fate/tower_of_fate.html"
         },
@@ -107,8 +114,8 @@
     "usb2snes": {
         "usb2snes_address": "ws://localhost:23074/",
         "hotkeys": {
-            "reset": "F11",
-            "menu" : "Shift+F11"
+            "reset": "F24",
+            "menu" : "F23"
         }
     }
 }

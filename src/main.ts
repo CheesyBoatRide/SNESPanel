@@ -434,16 +434,21 @@ ipcMain.on('toggleApplet', (_event, appDesc: AppletDescription) => {
 });
 
 // Event from the UI to send a reset event over usb2snes
-ipcMain.on('resetSnes', (_event) => {
+ipcMain.on('snesReset', (_event) => {
     snesControls.snesReset();
 });
 
 // Event from the UI to send a menu event over usb2snes
-ipcMain.on('resetSnesToMenu', (_event) => {
+ipcMain.on('snesResetToMenu', (_event) => {
     snesControls.snesResetToMenu();
 });
 
 // Event from the UI to get RAM values over usb2snes
-ipcMain.on('snesGetAddress', (_event, address, offset) => {
+ipcMain.on('snesRequestMemoryValue', (_event, address, offset) => {
     snesControls.snesRequestMemoryValue(address, offset);
+});
+
+// Event from the UI to send RAM values over usb2snes
+ipcMain.on('snesSetMemoryValue', (_event, address, data) => {
+    snesControls.snesSetMemoryValue(address, data);
 });

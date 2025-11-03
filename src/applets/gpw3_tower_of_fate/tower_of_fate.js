@@ -18,7 +18,7 @@ document.onkeydown = () => false; // no keyboard presses right now
 
 function refreshValues() {
     if(snes_connected) {
-        ipcRenderer.send("snesGetAddress", room_data_ram_address, room_data_ram_size);
+        ipcRenderer.send("snesRequestMemoryValue", room_data_ram_address, room_data_ram_size);
     }
     
     setTimeout(function () { refreshValues(); }, 100);
@@ -30,7 +30,7 @@ ipcRenderer.on('snesConnectionStatus', (_event, connected) => {
     snes_connected = connected;
 });
 
-ipcRenderer.on('receiveSnesAddress', (_event, msg) => {
+ipcRenderer.on('snesAddressValue', (_event, address, msg) => {
 
     var current_count = 0;
     var num_digits = msg[current_room_digits_offset];

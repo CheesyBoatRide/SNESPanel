@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Super Metroid Debug</title>
+    <link rel="stylesheet" href="./super_metroid_debug.css">
+    <script defer src="./super_metroid_debug.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <div class="card">
+            <div>
+                <h2 style="margin:0 0 6px 0">Super Metroid Debug Panel</h2>
+                <div class="muted">Modify Samus Properties via USB2SNES</div>
+            </div>
+        </div> <!-- card -->
+
+        <div class="card">
+            <div style="margin:10px 0;">
+                <div class="card-header">
+                    <div class="muted">Quick Action</div>
+                </div>
+                <button class="btn btn-primary" onclick="giveBlueSuit()">Blue Suit</button>
+                <button class="btn btn-primary" onclick="giveSpikeSuit()">Spike Suit</button>
+
+            </div>
+
+        </div>
+
+        <!-- Major Items-->
+        <div class="card">
+            <div style="margin:10px 0;">
+                <div class="card-header">
+                    <div class="muted">Major Items</div>
+                </div>
+                <form action="#">
+                    <fieldset>
+                      
+                        <input class="triStateCheck_Item" type="checkbox" id="morph" name="major" value="morph">
+                        <label for="morph">Morph</label><br>
+                          
+                        <input class="triStateCheck_Item" type="checkbox" id="bombs" name="major" value="bombs">
+                        <label for="bombs">Bombs</label><br>
+
+                        <input class="triStateCheck_Item" type="checkbox" id="spring_ball" name="major" value="spring_ball">
+                        <label for="spring_ball">Spring Ball</label><br>
+
+                        <input class="triStateCheck_Item" type="checkbox" id="varia" name="major" value="varia">
+                        <label for="varia">Varia</label><br>
+
+                        <input class="triStateCheck_Item" type="checkbox" id="gravity" name="major" value="gravity">
+                        <label for="gravity">Gravity</label><br>
+
+                        <input class="triStateCheck_Item" type="checkbox" id="hi_jump" name="major" value="hi_jump">
+                        <label for="hi_jump">Hi-Jump</label><br>
+                        
+                        <input class="triStateCheck_Item" type="checkbox" id="speed_booster" name="major" value="speed_booster">
+                        <label for="speed_booster">Speed Booster</label><br>
+
+                        <input class="triStateCheck_Item" type="checkbox" id="space_jump" name="major" value="space_jump">
+                        <label for="space_jump">Space Jump</label><br>
+
+                        <input class="triStateCheck_Item" type="checkbox" id="grapple" name="major" value="grapple">
+                        <label for="grapple">Grapple Beam</label><br>
+
+                        <input class="triStateCheck_Item" type="checkbox" id="x_ray" name="major" value="x_ray">
+                        <label for="x_ray">X-Ray Scope</label><br>
+                        
+                        <input class="triStateCheck_Item" type="checkbox" id="screw_attack" name="major" value="screw_attack">
+                        <label for="screw_attack">Screw Attack</label><br>
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+        <!-- Resources -->
+        <div class="card">
+            <div style="margin:10px 0;">
+                <div class="card-header">
+                    <div class="muted">Resources</div>
+                </div>
+        
+                <div style="margin-top:10px;">
+                    <div class="form-row">
+                        <label class="muted">Energy</label>
+                        <input id="energy_count" class="input" type="number" value="0" />
+                    </div>
+                    <div class="form-row">
+                        <label class="muted">Missiles</label>
+                        <input id="missile_count" class="input" type="number" value="0" />
+                    </div>
+                    <div class="form-row">
+                        <label class="muted">Super Missiles</label>
+                        <input id="super_missile_count" class="input" type="number" value="0" />
+                    </div>
+                    <div class="form-row">
+                        <label class="muted">Power Bombs</label>
+                        <input id="power_bomb_count" class="input" type="number" value="0" />
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+
+
+
+
+    </div> <!-- main -->
+</body>
+
+</html>
