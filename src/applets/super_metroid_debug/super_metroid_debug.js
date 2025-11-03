@@ -203,25 +203,35 @@ function setItemState(checkbox) {
             console.error("Unknown checkbox id: " + checkbox.id);
             return;
     }
-    if (checkbox.indeterminate) {
+
+    let equipped = items_equipped & 0xFFFF;
+    let collected = items_collected & 0xFFFF;
+
+    let equipped_now = (equipped & flag) ? 1 : 0;
+    let collected_now = (collected & flag) ? 1 : 0;
+
+    if(equipped_now && !collected_now) {
+        console.error("Inconsistent state: item is equipped but not collected");
+        return;
+    } else if (!equipped_now && collected_now) {
         // Currently collected, not equipped -> equip it
-        items_equipped |= flag;
-    } else if (checkbox.checked) {
+        equipped = (equipped | flag) & 0xFFFF;
+    } else if (equipped_now && collected_now) {
         // Currently equipped -> remove both equipped and collected
-        items_equipped &= ~flag;
-        items_collected &= ~flag;
+        equipped = (equipped & ~flag) & 0xFFFF;
+        collected = (collected & ~flag) & 0xFFFF;
     } else {
-        // Currently not collected -> collect and equip it
-        items_collected |= flag;
-        items_equipped |= flag;
+        // Currently not collected -> collect it
+        collected = (collected | flag) & 0xFFFF;
     }
+
     // Send updated values to SNES
     if (snes_connected) {
         let msg = new Uint8Array(4);
-        msg[0] = items_equipped & 0xFF;
-        msg[1] = (items_equipped >> 8) & 0xFF;
-        msg[2] = items_collected & 0xFF;
-        msg[3] = (items_collected >> 8) & 0xFF;
+        msg[0] = equipped & 0xFF;
+        msg[1] = (equipped >> 8) & 0xFF;
+        msg[2] = collected & 0xFF;
+        msg[3] = (collected >> 8) & 0xFF;
         ipcRenderer.send("snesSetMemoryValue", items_addr, msg);
     }
 
@@ -230,8 +240,8 @@ function setItemState(checkbox) {
 const childCheckboxes = document.getElementsByClassName("triStateCheck_Item");
 for (let i = 0; i < childCheckboxes.length; i++) {
     childCheckboxes[i].addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent the default checkbox toggle behavior     
         const checkbox = event.target;
         setItemState(checkbox);
+        event.preventDefault(); // Prevent the default checkbox toggle behavior     
     });
 }
