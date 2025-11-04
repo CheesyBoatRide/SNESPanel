@@ -80,9 +80,8 @@
         {
             "name": "Super Metroid Debug",
             "html": "./src/applets/super_metroid_debug/super_metroid_debug.html",
-            "width": 1080,
-            "height": 720,
-            "dev_tools": true
+            "width": 680,
+            "height": 940
         },
         {
             "name": "TowerOfFate",
@@ -114,8 +113,8 @@
     "usb2snes": {
         "usb2snes_address": "ws://localhost:23074/",
         "hotkeys": {
-            "reset": "F24",
-            "menu" : "F23"
+            "reset": "",
+            "menu" : ""
         }
     }
 }

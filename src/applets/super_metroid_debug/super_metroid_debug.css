@@ -37,7 +37,6 @@
 
   /* UI details */
   --elevation-1: rgba(0,0,0,0.45);
-  --focus-ring: rgba(255,138,43,0.16); /* rgba(#ff8a2b, 0.16) */
   --glass-border: rgba(255,255,255,0.03);
 }
 
@@ -151,7 +150,7 @@ p, label {
   background: linear-gradient(180deg, var(--muted-surface), rgba(255,255,255,0.01));
   color: var(--text);
   border: 1px solid rgba(255,255,255,0.04);
-  padding: 10px 12px;
+  padding: 6px 8px;
   border-radius: 6px;
   outline: none;
   box-shadow: inset 0 -1px 0 rgba(255,255,255,0.01);
@@ -159,13 +158,12 @@ p, label {
 }
 .input:focus, input:focus, textarea:focus, select:focus {
   border-color: var(--primary);
-  box-shadow: 0 6px 20px var(--focus-ring);
 }
 
 /* Labels paired with inputs */
 .form-row {
   display:flex;
-  flex-direction:column;
+  flex-direction:row;
   gap:6px;
   margin-bottom: 10px;
 }
@@ -214,7 +212,6 @@ p, label {
 
 /* focus utilities for accessibility */
 :focus {
-  outline: 3px solid var(--focus-ring);
   outline-offset: 2px;
   border-radius: 6px;
 }

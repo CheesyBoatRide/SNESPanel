@@ -73,12 +73,12 @@ function loadSettings() {
         mainWindow.webContents.send("applyCollapseSettings", configData.expanded_groups);
 
         // Register hotkeys for SNES controls
-        if(configData.usb2snes.hotkeys.reset !== undefined) {
+        if(configData.usb2snes.hotkeys.reset !== undefined && configData.usb2snes.hotkeys.reset.length > 0) {
             globalShortcut.register(configData.usb2snes.hotkeys.reset, () => {
                 snesControls.snesReset();
             });
         }
-        if(configData.usb2snes.hotkeys.menu !== undefined) {
+        if(configData.usb2snes.hotkeys.menu !== undefined && configData.usb2snes.hotkeys.reset.length > 0) {
             globalShortcut.register(configData.usb2snes.hotkeys.menu, () => {
                 snesControls.snesResetToMenu();
             });
