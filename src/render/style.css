@@ -27,6 +27,9 @@ button {
     margin: 3px auto 0;
     padding: 3px 7px;
     font: inherit;
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+    overflow: hidden;    /* Hides any content that overflows the element's box */
+    text-overflow: ellipsis; /* Displays an ellipsis (...) to indicate truncated text */
 }
 
 .collapsible.active {

@@ -11,6 +11,36 @@ let mainWindow: BrowserWindow | null;
 let processes: ProcessMap = new Map();
 let subWindows: AppletMap = new Map();
 
+function getProcessFullPath(appDesc: AppDescription): string | null{
+    // Search for the relevant command
+    // First check for an absolute path.  Failing that, assume a relative
+    // path from a given working directory.  If none was specified, assume
+    // a path relative to the working directory of the SNES panel itself
+    let cmd = appDesc.cmd;
+    let working_dir = appDesc.working_directory
+
+    if (!fs.existsSync(cmd)) {
+        if (working_dir !== undefined) {
+            if (!fs.existsSync(working_dir)) {
+                working_dir = path.join(app.getAppPath(), working_dir);
+            }
+            cmd = path.join(working_dir, cmd);
+        } else {
+            cmd = path.join(app.getAppPath(), cmd);
+        }
+    }
+
+    if (!fs.existsSync(cmd)) {
+        console.error("Command path %s does not exist", cmd);
+        return null;
+    }
+
+    // Allow the filesystem to clean up our paths
+    cmd = fs.realpathSync(cmd);
+
+    return cmd
+}
+
 function findConfigFile(): string {
     let configFile = './config.json';
     const args = process.argv;
@@ -69,6 +99,13 @@ function loadSettings() {
 
         // Kick off any apps or applets set to launch on start
         for (const app_data of configData.apps) {
+            let cmd = getProcessFullPath(app_data);
+            if (cmd === null || !fs.existsSync(cmd)) {
+                console.error("App %s not found at path %s", app_data.name, cmd);
+                app_data.error = 'error';
+                updateAppStatus(app_data);
+                continue;
+            }
             if (app_data.launch_on_start === true) {
                 startProcess(app_data);
             }
@@ -299,24 +336,15 @@ function startApplet(appDesc: AppletDescription) {
 
 /// Start a child process with the given description
 function startProcess(appDesc: AppDescription) {
+    let cmd = getProcessFullPath(appDesc);
 
-    // Search for the relevant command
-    // First check for an absolute path.  Failing that, assume a relative
-    // path from a given working directory.  If none was specified, assume
-    // a path relative to the working directory of the SNES panel itself
-    let cmd = appDesc.cmd;
-    let working_dir = appDesc.working_directory
-
-    if (!fs.existsSync(cmd)) {
-        if (working_dir !== undefined) {
-            if (!fs.existsSync(working_dir)) {
-                working_dir = path.join(app.getAppPath(), working_dir);
-            }
-            cmd = path.join(working_dir, cmd);
-        } else {
-            cmd = path.join(app.getAppPath(), cmd);
-        }
+    if(cmd === null) {
+        appDesc.error = 'error';
+        updateAppStatus(appDesc);
+        return;
     }
+
+    let working_dir = appDesc.working_directory
 
     // Default the working directory of the launched app to be the directory it lives in
     if (working_dir === undefined) {
@@ -324,7 +352,6 @@ function startProcess(appDesc: AppDescription) {
     }
 
     // Allow the filesystem to clean up our paths
-    cmd = fs.realpathSync(cmd);
     working_dir = fs.realpathSync(working_dir);
 
     console.log("Command: %s", cmd);
