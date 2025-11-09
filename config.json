@@ -4,7 +4,7 @@
             "name": "SNI",
             "args": [],
             "cmd": "./sni.exe",
-            "working_directory": "E:/Speedrunning/sni-v0.0.96-windows-amd64",
+            "working_directory": "./sni-v0.0.96-windows-amd64",
             "env": {
                 "SNI_USB2SNES_LISTEN_ADDRS": "0.0.0.0:23074,0.0.0.0:8080"
             },
@@ -12,68 +12,22 @@
         },
         {
             "name": "File Explorer",
-            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/manage_files.exe"
-        },
-        {
-            "name": "Metroid Inputs",
-            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/InputDisplay/snes_input_display-windows-amd64.exe",
-            "args": [
-                "settings_sm.toml"
-            ]
-        },
-        {
-            "name": "SMW Inputs",
-            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/InputDisplay/snes_input_display-windows-amd64.exe",
-            "args": [
-                "settings_smw.toml"
-            ]
+            "cmd": "./sni-v0.0.96-windows-amd64/manage_files.exe"
         },
         {
             "name": "Tracker",
-            "cmd": "E:/Speedrunning/EmoTracker/EmoTracker.exe"
-        },
-        {
-            "name": "SM Tile Viewer",
-            "cmd": "E:/Speedrunning/sni-v0.0.96-windows-amd64/SMTileViewer/SMTileViewer.exe"
+            "cmd": "./EmoTracker/EmoTracker.exe"
         },
         {
             "name": "Timer",
-            "cmd": "E:/Speedrunning/LiveSplit_1.8.21/LiveSplit.exe",
+            "cmd": "./LiveSplit_1.8.21/LiveSplit.exe",
             "args": [
-                "-l", "E:/Speedrunning/splits/timer.lsl", "-s", "E:/Speedrunning/splits/timer.lss"
-            ]
-        },
-        {
-            "name": "PRKD Splits",
-            "cmd": "E:/Speedrunning/LiveSplit_1.8.21/LiveSplit.exe",
-            "args": [
-                "-l", "E:/Speedrunning/splits/PRKD.lsl", "-s", "E:/Speedrunning/splits/Super Metroid - Any% (PRKD, NTSC, SNES).lss"
-            ]
-        },
-        {
-            "name": "KPDR Splits",
-            "cmd": "E:/Speedrunning/LiveSplit_1.8.21/LiveSplit.exe",
-            "args": [
-                "-l", "E:/Speedrunning/splits/KPDR.lsl", "-s", "E:/Speedrunning/splits/Super Metroid - Any% (KPDR, NTSC).lss"
-            ]
-        },
-        {
-            "name": "GPW3 Splits",
-            "cmd": "E:/Speedrunning/LiveSplit_1.8.21/LiveSplit.exe",
-            "args": [
-                "-l", "E:/Speedrunning/splits/gpw3_any.lsl", "-s", "E:/Speedrunning/splits/Grand Poo World 3 - Any%.lss"
-            ]
-        },
-        {
-            "name": "GPW3 End Segment Splits",
-            "cmd": "E:/Speedrunning/LiveSplit_1.8.21/LiveSplit.exe",
-            "args": [
-                "-l", "E:/Speedrunning/splits/gpw3_last_world.lsl", "-s", "E:/Speedrunning/splits/Grand Poo World 3 - Any% - Last World Segment.lss"
+                "-l", "./splits/timer.lsl", "-s", "./splits/timer.lss"
             ]
         },
         {
             "name": "Archipelago SNI Client",
-            "cmd": "E:/Speedrunning/Archipelago/ArchipelagoSNIClient.exe"
+            "cmd": "./Archipelago/ArchipelagoSNIClient.exe"
         }
     ],
     "applets": [
@@ -82,10 +36,6 @@
             "html": "./src/applets/super_metroid_debug/super_metroid_debug.html",
             "width": 680,
             "height": 940
-        },
-        {
-            "name": "TowerOfFate",
-            "html": "./src/applets/gpw3_tower_of_fate/tower_of_fate.html"
         },
         {
             "name": "Mario Death Counter",

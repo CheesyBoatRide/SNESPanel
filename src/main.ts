@@ -11,6 +11,21 @@ let mainWindow: BrowserWindow | null;
 let processes: ProcessMap = new Map();
 let subWindows: AppletMap = new Map();
 
+function findConfigFile(): string {
+    let configFile = './config.json';
+    const args = process.argv;
+    console.log('All command-line arguments:', args);   
+    // To get a specific argument value, you might need to parse the array.
+    // For example, to find a value after a specific flag like '--config':
+    const configIndex = args.indexOf('--config');
+    if (configIndex !== -1 && configIndex + 1 < args.length) {
+      const configValue = args[configIndex + 1];
+      console.log('Value of --config:', configValue);
+      configFile = configValue;
+    }
+    return configFile;
+}
+
 /// Parse and process settings from `config.json` file
 /// Must be called after the main window is valid
 function loadSettings() {
@@ -21,7 +36,7 @@ function loadSettings() {
 
     mainWindow.webContents.send("snesConnectionStatus", false);
 
-    let configFile = './config.json';
+    let configFile = findConfigFile();
     if (!fs.existsSync(configFile)) {
         configFile = path.join(app.getAppPath(), 'config.json');
     }
