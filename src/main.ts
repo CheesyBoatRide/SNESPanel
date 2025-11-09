@@ -166,6 +166,8 @@ function createMainWindow() {
             snesControls.snesDisconnect();
         }
 
+        mainWindow = null;
+
         // Kill any lingering processes
         for (const [id, childProcess] of processes.entries()) {
             killProcess(childProcess);
