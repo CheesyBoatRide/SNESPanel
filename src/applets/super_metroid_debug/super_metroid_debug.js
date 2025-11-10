@@ -45,19 +45,18 @@ function refreshValues() {
         refreshResources();
         refreshItems();
         refreshBeams();
-    } else {
-        setTimeout(function () { refreshValues(); }, 100);
     }
 }
 
-refreshValues();
-
 ipcRenderer.on('snesConnectionStatus', (_event, connected) => {
-    if(connected && !snes_connected) {
+    let was_connected = snes_connected;
+    snes_connected = connected;
+
+    if(connected && !was_connected) {
         // Just connected, start refreshing values
+        console.log("Connected to SNES, starting value refresh");
         refreshValues();
     }
-    snes_connected = connected;
 });
 
 ipcRenderer.on('snesAddressValue', (_event, address, msg) => {
