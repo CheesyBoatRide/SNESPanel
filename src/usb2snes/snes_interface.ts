@@ -229,7 +229,7 @@ export function snesRequestMemoryValue(address: string, offset: number) {
         let request = {
             Opcode: "GetAddress",
             Space: "SNES",
-            Operands: [address, JSON.stringify(offset)]
+            Operands: [address, offset.toString(16)]
         };
         lastRequest = "GetAddress";
         wsConnection.send(JSON.stringify(request));

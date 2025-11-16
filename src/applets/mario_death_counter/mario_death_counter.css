@@ -14,3 +14,14 @@ body {
     -1px 1px 0 black,
     1px 1px 0 black; /* Creates a 1px black outline */
 }
+
+dialog {
+    font: 900 24px/1.5 Arial ;
+    background-color: #007b4a;
+    color: var(--text_color);
+    text-shadow:
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black; /* Creates a 1px black outline */
+}

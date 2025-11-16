@@ -11,9 +11,20 @@
 </head>
 
 <body>
-    <div>
+    <div title="Right click to set death count" id="death_counter_container">
         <p id="death_text">Deaths: 0</p>
     </div>
+
+    <dialog id="myDialog">
+        <p>Set Death Count:</p>
+        <input type="number" id="numberInput">
+        <button id="submitNumber">Submit</button>
+        <button id="cancelDialog">Cancel</button>
+        <button id="resetButton" title="Reset Death Count">Reset</button>
+    </dialog>
+
+    
+
 </body>
 
 </html>
